@@ -6,12 +6,19 @@ import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 
 interface SearchFieldProps {
+  defaultValue?: string;
   onSearch: (value: string) => void;
+  onCancel?: () => void;
   className?: string;
 }
 
-export const SearchField: FC<SearchFieldProps> = ({ onSearch, className }) => {
-  const [value, setValue] = useState('');
+export const SearchField: FC<SearchFieldProps> = ({
+  defaultValue,
+  onSearch,
+  onCancel,
+  className,
+}) => {
+  const [value, setValue] = useState(defaultValue || '');
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -21,6 +28,7 @@ export const SearchField: FC<SearchFieldProps> = ({ onSearch, className }) => {
 
   const handleClearSearchValue = () => {
     setValue('');
+    onCancel?.();
     inputRef.current?.focus();
   };
 
@@ -56,16 +64,19 @@ export const SearchField: FC<SearchFieldProps> = ({ onSearch, className }) => {
         variant="link"
         size="icon"
         onClick={handleClearSearchValue}
-        className={cn('absolute right-12 z-50 text-black hover:scale-110', {
-          ['invisible']: !value,
-        })}
+        className={cn(
+          'absolute right-12 z-50 text-foreground hover:scale-110',
+          {
+            ['invisible']: !value,
+          },
+        )}
       >
         <X className="size-6" />
       </Button>
       <Button
         size="icon"
         onClick={handleSearchClick}
-        className={cn('relative z-50 w-12 rounded-l-none')}
+        className={cn('relative z-50 w-12  rounded-l-none')}
       >
         <Search className="size-6" />
       </Button>

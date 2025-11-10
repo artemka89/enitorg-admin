@@ -7,25 +7,26 @@ export const API_ROUTES = {
     me: '/auth/me',
   },
   products: {
-    base: '/admin/products',
-    uploadImage: '/api/admin/products/upload-image',
+    base: '/products',
+    byId: (id?: string) => `/api/admin/products/${id}`,
+    uploadImage: '/products/upload-image',
   },
   categories: {
-    base: '/admin/categories',
+    base: '/categories',
   },
 } as const;
 
 export const ROUTES = {
   home: '/',
   products: {
-    base: '/admin/products',
-    byId: '/admin/products/:id',
-    add: '/admin/products/add',
+    base: '/products',
+    byId: '/products/:id',
+    add: '/products/add',
   },
   categories: {
-    base: '/admin/categories',
-    bySlug: '/admin/categories/:slug',
-    add: '/admin/categories/add',
+    base: '/categories',
+    bySlug: '/categories/:slug',
+    add: '/categories/add',
   },
 } as const;
 

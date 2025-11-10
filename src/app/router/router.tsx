@@ -29,6 +29,7 @@ export const router = createBrowserRouter([
         path: ROUTES.categories.add,
         element: <div>Add Category</div>,
       },
+      { path: '*', element: <div>Страница не найдена</div> },
     ],
   },
 ]);

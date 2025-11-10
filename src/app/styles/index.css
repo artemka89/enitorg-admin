@@ -118,3 +118,21 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  .table-scrollbar::-webkit-scrollbar {
+    @apply bg-secondary w-2;
+  }
+  .table-scrollbar::-webkit-scrollbar-thumb {
+    @apply bg-foreground/20 rounded-full border border-secondary;
+  }
+  .table-scrollbar::-webkit-scrollbar-thumb:hover {
+    @apply bg-foreground/30;
+  }
+  .table-scrollbar::-webkit-scrollbar-track {
+    @apply bg-secondary mb-2 mt-15;
+  }
+  .table-scrollbar::-webkit-scrollbar-corner {
+    @apply bg-foreground/10;
+  }
+}

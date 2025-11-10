@@ -6,11 +6,16 @@ import { cn } from '@/shared/lib/cn';
 import { ROUTES } from '../routes';
 
 interface LogoProps {
+  isSmall?: boolean;
   theme?: 'light' | 'dark';
   className?: string;
 }
 
-export const Logo: FC<LogoProps> = ({ theme = 'light', className }) => {
+export const Logo: FC<LogoProps> = ({
+  theme = 'light',
+  isSmall = false,
+  className,
+}) => {
   return (
     <div className={cn('text-3xl', className)}>
       <Link to={ROUTES.home}>
@@ -22,9 +27,11 @@ export const Logo: FC<LogoProps> = ({ theme = 'light', className }) => {
               'font-bold',
             )}
           >
-            ENI
+            {isSmall ? 'E' : 'ENI'}
           </span>
-          <span className="text-primary font-normal">ТОРГ</span>
+          <span className="text-primary font-normal">
+            {isSmall ? 'T' : 'ТОРГ'}
+          </span>
         </div>
       </Link>
     </div>
