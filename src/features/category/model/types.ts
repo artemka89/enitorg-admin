@@ -1,0 +1,21 @@
+export interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  totalProducts: number;
+  parentId?: string;
+  children: Omit<Category, 'children'>[];
+}
+
+export interface CreateCategory {
+  name: string;
+  slug: string;
+  parentId?: string;
+}
+
+export interface UpdateCategory {
+  id: string;
+  name: string;
+  slug: string;
+  parentId?: string;
+}

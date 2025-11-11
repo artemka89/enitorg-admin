@@ -1,5 +1,8 @@
 import { createBrowserRouter } from 'react-router';
 
+import { AddCategoryPage } from '@/pages/add-category-page';
+import { CategoriesPage } from '@/pages/categories-page';
+import { CategoryPage } from '@/pages/category-page';
 import { ROUTES } from '@/shared/routes';
 
 import { HomePage } from '../../pages/home-page';
@@ -20,14 +23,14 @@ export const router = createBrowserRouter([
         element: <div>Product</div>,
       },
       { path: ROUTES.products.add, element: <div>Add Product</div> },
-      { path: ROUTES.categories.base, element: <div>Categories</div> },
+      { path: ROUTES.categories.base, element: <CategoriesPage /> },
       {
-        path: ROUTES.categories.bySlug,
-        element: <div>Category</div>,
+        path: ROUTES.categories.byId,
+        element: <CategoryPage />,
       },
       {
         path: ROUTES.categories.add,
-        element: <div>Add Category</div>,
+        element: <AddCategoryPage />,
       },
       { path: '*', element: <div>Страница не найдена</div> },
     ],

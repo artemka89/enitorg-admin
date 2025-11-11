@@ -8,11 +8,12 @@ export const API_ROUTES = {
   },
   products: {
     base: '/products',
-    byId: (id?: string) => `/api/admin/products/${id}`,
+    byId: (id?: string) => `/products/${id}`,
     uploadImage: '/products/upload-image',
   },
   categories: {
     base: '/categories',
+    byId: (id: string) => `/categories/${id}`,
   },
 } as const;
 
@@ -25,7 +26,7 @@ export const ROUTES = {
   },
   categories: {
     base: '/categories',
-    bySlug: '/categories/:slug',
+    byId: '/categories/:id',
     add: '/categories/add',
   },
 } as const;
@@ -34,8 +35,8 @@ export type PathParams = {
   [ROUTES.products.byId]: {
     id: string;
   };
-  [ROUTES.categories.bySlug]: {
-    slug: string;
+  [ROUTES.categories.byId]: {
+    id: string;
   };
 };
 

@@ -10,6 +10,8 @@ import {
 import { ChevronDown, Plus } from 'lucide-react';
 import { useQueryState } from 'nuqs';
 
+import { CategorySelector } from '@/features/category';
+import { cn } from '@/shared/lib/cn';
 import { Button, buttonVariants } from '@/shared/ui/button';
 import {
   DropdownMenu,
@@ -20,6 +22,7 @@ import {
 import { SearchField } from '@/shared/ui/search-field';
 import { SortSelect } from '@/shared/ui/sort-select/sort-select';
 import { useSort } from '@/shared/ui/sort-select/use-sort';
+import { Spinner } from '@/shared/ui/spinner';
 import {
   Table,
   TableBody,
@@ -39,16 +42,16 @@ export const ProductsTable = () => {
   });
 
   const { value, sort, order, onChangeSort } = useSort();
-  // const [currentCategory, setCurrentCategory] = useState('all');
+  const [currentCategory, setCurrentCategory] = useState('all');
   const [searchValue, setSearchValue] = useQueryState('query', {
     defaultValue: '',
   });
 
-  const { data, fetchNextPage, hasNextPage } = useGetProducts({
+  const { data, fetchNextPage, hasNextPage, isLoading } = useGetProducts({
     sort,
     order,
     query: searchValue,
-    // categorySlug: currentCategory === 'all' ? undefined : currentCategory,
+    categorySlug: currentCategory === 'all' ? undefined : currentCategory,
   });
 
   const products = useMemo(
@@ -70,7 +73,7 @@ export const ProductsTable = () => {
 
   return (
     <>
-      <div className="flex items-center gap-4 z-50 h-16">
+      <div className="flex items-center gap-4 pb-4">
         <Link
           to="/admin/products/add"
           className={buttonVariants({ variant: 'default' })}
@@ -86,10 +89,10 @@ export const ProductsTable = () => {
 
         <SortSelect value={value} onValueChange={onChangeSort} />
 
-        {/* <CategorySelector
+        <CategorySelector
           value={currentCategory}
           onValueChange={setCurrentCategory}
-        /> */}
+        />
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -119,8 +122,8 @@ export const ProductsTable = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="overflow-hidden rounded-md border">
-        <Table>
+      <div className="overflow-hidden border">
+        <Table className={cn({ 'h-full': isLoading })}>
           <TableHeader className="sticky top-0 bg-secondary z-50 shadow-xl">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -158,13 +161,21 @@ export const ProductsTable = () => {
                 </TableRow>
               ))
             ) : (
-              <TableRow>
-                <TableCell
-                  colSpan={columns.length}
-                  className="h-24 text-center"
-                >
-                  Таблица пустая
-                </TableCell>
+              <TableRow className="h-full">
+                {isLoading ? (
+                  <TableCell colSpan={columns.length} className="bg-muted">
+                    <div className="flex items-center justify-center">
+                      <Spinner className="size-8" />
+                    </div>
+                  </TableCell>
+                ) : (
+                  <TableCell
+                    colSpan={columns.length}
+                    className="h-24 text-center"
+                  >
+                    Таблица пустая
+                  </TableCell>
+                )}
               </TableRow>
             )}
           </TableBody>

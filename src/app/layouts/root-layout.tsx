@@ -20,7 +20,7 @@ export default function RootLayout() {
       <SideBar collapsed={collapsed} setCollapsed={setCollapsed} />
       <div className="flex flex-col flex-1">
         <Header />
-        <main className="px-4 flex-1 flex flex-col">
+        <main className="p-4 flex-1 flex flex-col">
           <Outlet />
         </main>
       </div>

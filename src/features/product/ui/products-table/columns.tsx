@@ -1,8 +1,8 @@
-import { Link } from 'react-router';
+import { href, Link } from 'react-router';
 import { type ColumnDef } from '@tanstack/react-table';
 
 import { formatPrice } from '@/shared/lib/format-price';
-import { API_ROUTES } from '@/shared/routes';
+import { ROUTES } from '@/shared/routes';
 
 import { type Product } from '../../model/types';
 
@@ -16,7 +16,6 @@ export const columns: ColumnDef<Product>[] = [
           <img
             src={row.original.imageUrls[0]}
             alt={row.original.name}
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             loading="lazy"
             className="h-full w-full object-contain"
           />
@@ -33,7 +32,7 @@ export const columns: ColumnDef<Product>[] = [
     header: 'Название',
     cell: ({ row }) => (
       <Link
-        to={API_ROUTES.products.byId(row.original.id)}
+        to={href(ROUTES.products.byId, { id: row.original.id })}
         className="font-semibold text-wrap hover:underline"
       >
         {row.getValue('name')}
@@ -44,14 +43,17 @@ export const columns: ColumnDef<Product>[] = [
     accessorKey: 'categories',
     header: 'Категории',
     cell: ({ row }) => {
-      const categories = row.original.categories.map(
-        (category) => category.name,
-      );
-
       return (
         <ul>
-          {categories.map((category) => (
-            <li key={category}>{category}</li>
+          {row.original.categories.map((category) => (
+            <li key={category.id}>
+              <Link
+                to={href(ROUTES.categories.byId, { id: row.original.id })}
+                className="font-semibold text-wrap hover:underline"
+              >
+                {category.name}
+              </Link>
+            </li>
           ))}
         </ul>
       );
