@@ -19,7 +19,7 @@ export interface ProductCategory {
   children?: Omit<ProductCategory, 'children'>[];
 }
 
-export interface CreateProduct {
+export interface AddProduct {
   name: string;
   code: string;
   price: number;

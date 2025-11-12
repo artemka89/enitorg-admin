@@ -1,8 +1,10 @@
 import { createBrowserRouter } from 'react-router';
 
 import { AddCategoryPage } from '@/pages/add-category-page';
+import { AddProductPage } from '@/pages/add-product-page';
 import { CategoriesPage } from '@/pages/categories-page';
 import { CategoryPage } from '@/pages/category-page';
+import { ProductPage } from '@/pages/product-page';
 import { ROUTES } from '@/shared/routes';
 
 import { HomePage } from '../../pages/home-page';
@@ -20,9 +22,9 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.products.byId,
-        element: <div>Product</div>,
+        element: <ProductPage />,
       },
-      { path: ROUTES.products.add, element: <div>Add Product</div> },
+      { path: ROUTES.products.add, element: <AddProductPage /> },
       { path: ROUTES.categories.base, element: <CategoriesPage /> },
       {
         path: ROUTES.categories.byId,

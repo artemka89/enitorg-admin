@@ -2,11 +2,11 @@ import { useMutation } from '@tanstack/react-query';
 
 import { productApi } from './api';
 import { productKeys } from './query-keys';
-import { type CreateProduct } from './types';
+import { type AddProduct } from './types';
 
-export const useCreateProducts = () => {
+export const useAddProducts = () => {
   return useMutation({
-    mutationFn: (data: CreateProduct[]) => productApi.createMany(data),
+    mutationFn: (data: AddProduct[]) => productApi.createMany(data),
     meta: {
       invalidateQueries: [productKeys.all],
       successMessage: 'Товары успешно созданы',

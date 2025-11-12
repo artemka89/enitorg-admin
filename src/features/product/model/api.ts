@@ -9,7 +9,7 @@ import { type PaginatedResponse } from '@/shared/api/types';
 import { API_ROUTES } from '@/shared/routes';
 
 import {
-  type CreateProduct,
+  type AddProduct,
   type Product,
   type ProductsParams,
   type UpdateProduct,
@@ -43,7 +43,7 @@ export const productApi = {
       enabled: !!id,
     });
   },
-  createMany: (data: CreateProduct[]) =>
+  createMany: (data: AddProduct[]) =>
     apiClient({
       url: API_ROUTES.products.base,
       method: 'POST',

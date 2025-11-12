@@ -26,9 +26,9 @@ export const ProductFormSchema = z.object({
   categoryIds: z.array(z.string()).min(1, { error: 'Выберите категорию' }),
 });
 
-export const CreateProductsSchema = z.object({
+export const AddProductsSchema = z.object({
   products: z.array(ProductFormSchema),
 });
 
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
-export type CreateProductsSchema = z.infer<typeof CreateProductsSchema>;
+export type AddProductsSchema = z.infer<typeof AddProductsSchema>;

@@ -117,6 +117,15 @@
   body {
     @apply bg-background text-foreground;
   }
+  h1 {
+    @apply text-2xl font-bold;
+  }
+  h2 {
+    @apply text-xl font-bold;
+  }
+  h3 {
+    @apply text-lg font-bold;
+  }
 }
 
 @layer utilities {
@@ -135,4 +144,16 @@
   .table-scrollbar::-webkit-scrollbar-corner {
     @apply bg-foreground/10;
   }
+}
+
+.crop-area-grid {
+  border: 2px solid #00ff2a !important;
+}
+
+.crop-area-grid::after {
+  border-color: #00ff2a !important;
+}
+
+.crop-area-grid::before {
+  border-color: #00ff2a !important;
 }

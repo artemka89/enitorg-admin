@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 
+import { CategoriesModal } from '@/features/category/ui/toggle-category/categories-modal';
 import { cn } from '@/shared/lib/cn';
 import { API_ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
@@ -19,26 +20,24 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 
-import { CreateProductsSchema } from '../model/product-form-schema';
-import { useCreateProducts } from '../model/use-create-products';
+import { AddProductsSchema } from '../model/product-form-schema';
+import { useAddProducts } from '../model/use-add-products';
 
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ImageUploadField } from './image-upload-field';
 import { ProductImagePreviews } from './product-image-previews';
 import { SpecificationFields } from './specification-fields';
 
-interface CreateProductsFormProps {
+interface AddProductsFormProps {
   className?: string;
 }
 
-export const CreateProductsForm: FC<CreateProductsFormProps> = ({
-  className,
-}) => {
-  const { mutate, isPending } = useCreateProducts();
+export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
+  const { mutate, isPending } = useAddProducts();
 
   const navigate = useNavigate();
 
-  const form = useForm<CreateProductsSchema>({
+  const form = useForm<AddProductsSchema>({
     defaultValues: {
       products: [
         {
@@ -54,7 +53,7 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
         },
       ],
     },
-    resolver: zodResolver(CreateProductsSchema),
+    resolver: zodResolver(AddProductsSchema),
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -62,7 +61,7 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
     name: 'products',
   });
 
-  const onSubmit = async (data: CreateProductsSchema) => {
+  const onSubmit = async (data: AddProductsSchema) => {
     mutate(data.products, {
       onSuccess: () => {
         form.reset();
@@ -225,7 +224,7 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
                   />
                 </div>
               </div>
-              {/* 
+
               <FormField
                 control={form.control}
                 name={`products.${index}.categoryIds`}
@@ -233,7 +232,7 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
                   <FormItem>
                     <FormLabel>Категории *:</FormLabel>
                     <FormControl>
-                      <Categories
+                      <CategoriesModal
                         selectedCategories={field.value}
                         onSelectionChange={field.onChange}
                       />
@@ -241,7 +240,7 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
                     <FormMessage />
                   </FormItem>
                 )}
-              /> */}
+              />
 
               <FormField
                 control={form.control}
@@ -312,14 +311,9 @@ export const CreateProductsForm: FC<CreateProductsFormProps> = ({
             Добавить еще товар
           </Button>
 
-          <div className="flex gap-2">
-            <Button type="button" variant="outline">
-              Отмена
-            </Button>
-            <Button type="submit" disabled={isPending}>
-              Сохранить товары ({fields.length})
-            </Button>
-          </div>
+          <Button type="submit" disabled={isPending}>
+            Сохранить товары ({fields.length})
+          </Button>
         </div>
       </form>
     </Form>

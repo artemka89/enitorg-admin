@@ -4,6 +4,7 @@ import { ChevronRight } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { Button, buttonVariants } from '@/shared/ui/button';
 import { Logo } from '@/shared/ui/logo';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
 import { MENU_ITEMS } from '../model/constants';
 
@@ -34,10 +35,17 @@ export const SideBar: FC<SideBarProps> = ({
       <nav className="flex-1 px-2 overflow-hidden">
         {MENU_ITEMS.map((item) => (
           <div key={item.href}>
-            <MenuLink key={item.href} to={item.href} className="w-full">
-              <item.icon />
-              {!collapsed && <span>{item.title}</span>}
-            </MenuLink>
+            <Tooltip>
+              <TooltipTrigger>
+                <MenuLink key={item.href} to={item.href} className="w-full">
+                  <item.icon />
+                  {!collapsed && <span>{item.title}</span>}
+                </MenuLink>
+                <TooltipContent hidden={!collapsed} side="right">
+                  <p>{item.title}</p>
+                </TooltipContent>
+              </TooltipTrigger>
+            </Tooltip>
           </div>
         ))}
       </nav>
@@ -48,7 +56,7 @@ export const SideBar: FC<SideBarProps> = ({
         onClick={() => setCollapsed(!collapsed)}
         className={cn(
           buttonVariants({ variant: 'ghost', size: 'icon' }),
-          'absolute bottom-10 -right-8 rounded-full',
+          'absolute bottom-10 right-1 rounded-full hover:border',
         )}
       >
         <ChevronRight

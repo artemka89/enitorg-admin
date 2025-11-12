@@ -12,6 +12,7 @@ import { useQueryState } from 'nuqs';
 
 import { CategorySelector } from '@/features/category';
 import { cn } from '@/shared/lib/cn';
+import { ROUTES } from '@/shared/routes';
 import { Button, buttonVariants } from '@/shared/ui/button';
 import {
   DropdownMenu,
@@ -75,7 +76,7 @@ export const ProductsTable = () => {
     <>
       <div className="flex items-center gap-4 pb-4">
         <Link
-          to="/admin/products/add"
+          to={ROUTES.products.add}
           className={buttonVariants({ variant: 'default' })}
         >
           <Plus />

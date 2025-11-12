@@ -12,12 +12,12 @@ import {
 import { Input } from '@/shared/ui/input';
 
 import {
-  type CreateProductsSchema,
+  type AddProductsSchema,
   type ProductFormSchema,
 } from '../model/product-form-schema';
 
 interface SpecificationFieldsProps {
-  control: Control<CreateProductsSchema | ProductFormSchema>;
+  control: Control<AddProductsSchema | ProductFormSchema>;
   name: 'specifications' | `products.${number}.specifications`;
 }
 

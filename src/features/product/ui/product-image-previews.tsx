@@ -27,13 +27,13 @@ export const ProductImagePreviews: FC<ProductImagePreviewsProps> = ({
   return (
     <div className={cn(className, 'grid grid-cols-2 gap-4 md:grid-cols-5')}>
       {imageUrls.map((url) => (
-        <Card key={url} className="group relative">
+        <Card key={url} className="group relative p-0">
           <CardContent className="p-0">
             <div className="relative aspect-square overflow-hidden rounded-md">
               <img
                 src={url}
                 alt={url}
-                className="h-full w-full object-contain"
+                className="h-full w-full object-contain aspect-square rounded-md"
               />
               <Button
                 type="button"

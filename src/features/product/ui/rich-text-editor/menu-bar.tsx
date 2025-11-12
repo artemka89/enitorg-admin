@@ -79,12 +79,13 @@ export const MenuBar: FC<MenuBarProps> = ({ editor }) => {
   ];
 
   return (
-    <div className="z-50 mb-1 space-x-2 rounded-md border bg-slate-50 p-1">
+    <div className="z-50 mb-1 space-x-2 rounded-md border bg-secondary p-1">
       {Options.map((option, index) => (
         <Toggle
           key={index}
           pressed={option.preesed}
           onPressedChange={option.onClick}
+          className="hover:bg-background hover:text-foreground"
         >
           {option.icon}
         </Toggle>
