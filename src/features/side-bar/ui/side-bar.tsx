@@ -36,7 +36,7 @@ export const SideBar: FC<SideBarProps> = ({
         {MENU_ITEMS.map((item) => (
           <div key={item.href}>
             <Tooltip>
-              <TooltipTrigger>
+              <TooltipTrigger className="w-full">
                 <MenuLink key={item.href} to={item.href} className="w-full">
                   <item.icon />
                   {!collapsed && <span>{item.title}</span>}

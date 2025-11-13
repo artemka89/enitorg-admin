@@ -1,8 +1,10 @@
 import { type FC, useState } from 'react';
 import { Link } from 'react-router';
 import {
+  type ExpandedState,
   flexRender,
   getCoreRowModel,
+  getExpandedRowModel,
   useReactTable,
   type VisibilityState,
 } from '@tanstack/react-table';
@@ -34,17 +36,21 @@ export const CategoriesTable: FC<CategoriesTableProps> = () => {
     id: false,
   });
 
-  const { data: categories, isLoading } = useGetCategories({
-    withParent: true,
-  });
+  const [expanded, setExpanded] = useState<ExpandedState>({});
+
+  const { data: categories, isLoading } = useGetCategories();
 
   const table = useReactTable({
     data: categories?.items || [],
     columns,
+    onExpandedChange: setExpanded,
+    getSubRows: (row) => row.children,
     getCoreRowModel: getCoreRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
+    getExpandedRowModel: getExpandedRowModel(),
     state: {
       columnVisibility,
+      expanded,
     },
   });
 

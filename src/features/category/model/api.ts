@@ -7,13 +7,13 @@ import { categoryKeys } from './query-keys';
 import type { Category, CreateCategory, UpdateCategory } from './types';
 
 export const categoryApi = {
-  getAll: (params?: { withParent: boolean }) => {
+  getAll: (withChildren?: boolean) => {
     return queryOptions({
-      queryKey: [...categoryKeys.all, params],
+      queryKey: [...categoryKeys.all, withChildren],
       queryFn: () =>
         apiClient<{ items: Category[] }>({
           url: API_ROUTES.categories.base,
-          params: { withParent: params?.withParent },
+          params: { withChildren },
         }),
     });
   },
