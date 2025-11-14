@@ -8,7 +8,22 @@ import { Button } from '@/shared/ui/button';
 
 import { type Category } from '../../model/types';
 
+import { RowDragHandleCell } from './row-drag-handle-cell';
+
 export const columns: ColumnDef<Category>[] = [
+  {
+    id: 'drag-handle',
+    cell: ({ row }) => {
+      if (row.depth === 0)
+        return (
+          <div className="w-4">
+            <RowDragHandleCell rowId={row.id} />
+          </div>
+        );
+
+      return;
+    },
+  },
   {
     id: 'expander',
     cell: ({ row }) => {

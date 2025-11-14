@@ -43,6 +43,13 @@ export const categoryApi = {
       body: category,
     });
   },
+  updateOrders: (data: { oldIndex: number; newIndex: number }) => {
+    return apiClient({
+      url: API_ROUTES.categories.updateOrders,
+      method: 'PUT',
+      body: data,
+    });
+  },
   remove: (id: string) =>
     apiClient({ url: API_ROUTES.categories.byId(id), method: 'DELETE' }),
 };

@@ -14,6 +14,7 @@ export const API_ROUTES = {
   categories: {
     base: '/categories',
     byId: (id: string) => `/categories/${id}`,
+    updateOrders: '/categories/update-orders',
   },
 } as const;
 

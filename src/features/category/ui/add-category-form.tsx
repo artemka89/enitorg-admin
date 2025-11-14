@@ -68,7 +68,10 @@ export const AddCategoryForm: FC = () => {
 
   return (
     <Form {...form}>
-      <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+      <form
+        onSubmit={form.handleSubmit(onSubmit)}
+        className="space-y-6 max-w-2xl"
+      >
         <FormField
           control={form.control}
           name="name"
@@ -102,62 +105,39 @@ export const AddCategoryForm: FC = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-4">
-          <div className="flex-2/3">
-            <FormField
-              control={form.control}
-              name="parentId"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Родительская категория:</FormLabel>
-                  <FormControl>
-                    <Select
-                      onValueChange={(value) =>
-                        field.onChange(value === 'none' ? null : value)
-                      }
-                      value={field.value}
-                    >
-                      <SelectTrigger className="w-full">
-                        <SelectValue placeholder="Выберите родительскую категорию (необязательно)" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">
-                          Без родительской категории
+        <div>
+          <FormField
+            control={form.control}
+            name="parentId"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Родительская категория:</FormLabel>
+                <FormControl>
+                  <Select
+                    onValueChange={(value) =>
+                      field.onChange(value === 'none' ? null : value)
+                    }
+                    value={field.value}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Выберите родительскую категорию (необязательно)" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        Без родительской категории
+                      </SelectItem>
+                      {categories?.items.map((category) => (
+                        <SelectItem key={category.id} value={category.id}>
+                          {category.name}
                         </SelectItem>
-                        {categories?.items.map((category) => (
-                          <SelectItem key={category.id} value={category.id}>
-                            {category.name}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-
-          <div className="flex-1/3">
-            <FormField
-              control={form.control}
-              name="order"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Порядковый номер *:</FormLabel>
-                  <FormControl>
-                    <Input
-                      type="number"
-                      {...field}
-                      placeholder="url-адрес-категории"
-                      className="w-full"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
 
         <div className="flex gap-4 pt-4">

@@ -1,5 +1,21 @@
-import { type FC, useState } from 'react';
+import { type FC, useMemo, useState } from 'react';
 import { Link } from 'react-router';
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  type UniqueIdentifier,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import { restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import {
+  SortableContext,
+  verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
 import {
   type ExpandedState,
   flexRender,
@@ -24,14 +40,12 @@ import {
 } from '@/shared/ui/table';
 
 import { useGetCategories } from '../../model/use-get-categories';
+import { useUpdateOrderCategories } from '../../model/use-update-order-categories';
 
 import { columns } from './columns';
+import { DraggableRow } from './draggable-row';
 
-interface CategoriesTableProps {
-  className?: string;
-}
-
-export const CategoriesTable: FC<CategoriesTableProps> = () => {
+export const CategoriesTable: FC = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     id: false,
   });
@@ -39,10 +53,17 @@ export const CategoriesTable: FC<CategoriesTableProps> = () => {
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
   const { data: categories, isLoading } = useGetCategories();
+  const { mutate: updateOrder } = useUpdateOrderCategories();
+
+  const dataIds = useMemo<UniqueIdentifier[]>(
+    () => categories?.items.map(({ id }) => id) || [],
+    [categories?.items],
+  );
 
   const table = useReactTable({
     data: categories?.items || [],
     columns,
+    getRowId: (row) => row.id,
     onExpandedChange: setExpanded,
     getSubRows: (row) => row.children,
     getCoreRowModel: getCoreRowModel(),
@@ -54,8 +75,29 @@ export const CategoriesTable: FC<CategoriesTableProps> = () => {
     },
   });
 
+  function handleDragEnd(event: DragEndEvent) {
+    const { active, over } = event;
+    if (active && over && active.id !== over.id) {
+      const oldIndex = dataIds.indexOf(active.id as string);
+      const newIndex = dataIds.indexOf(over.id as string);
+
+      updateOrder({ oldIndex, newIndex });
+    }
+  }
+
+  const sensors = useSensors(
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {}),
+  );
+
   return (
-    <>
+    <DndContext
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis]}
+      onDragEnd={handleDragEnd}
+      sensors={sensors}
+    >
       <div className="flex items-center gap-4 pb-4">
         <Link
           to={ROUTES.categories.add}
@@ -87,21 +129,14 @@ export const CategoriesTable: FC<CategoriesTableProps> = () => {
           </TableHeader>
           <TableBody>
             {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
-                <TableRow
-                  key={row.id}
-                  data-state={row.getIsSelected() && 'selected'}
-                >
-                  {row.getVisibleCells().map((cell) => (
-                    <TableCell key={cell.id}>
-                      {flexRender(
-                        cell.column.columnDef.cell,
-                        cell.getContext(),
-                      )}
-                    </TableCell>
-                  ))}
-                </TableRow>
-              ))
+              <SortableContext
+                items={dataIds}
+                strategy={verticalListSortingStrategy}
+              >
+                {table.getRowModel().rows.map((row) => (
+                  <DraggableRow key={row.id} row={row} />
+                ))}
+              </SortableContext>
             ) : (
               <TableRow className="h-full">
                 {isLoading ? (
@@ -123,6 +158,6 @@ export const CategoriesTable: FC<CategoriesTableProps> = () => {
           </TableBody>
         </Table>
       </div>
-    </>
+    </DndContext>
   );
 };

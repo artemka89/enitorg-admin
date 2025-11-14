@@ -47,7 +47,7 @@ export const SearchField: FC<SearchFieldProps> = ({
     <div
       className={cn(
         className,
-        'relative z-50 flex w-full max-w-[600px] min-w-[180px] items-center',
+        'relative flex w-full max-w-[600px] min-w-[180px] items-center',
       )}
     >
       <Input
@@ -58,25 +58,22 @@ export const SearchField: FC<SearchFieldProps> = ({
         onChange={handleChangeSearchValue}
         onKeyDown={handleEnterClick}
         placeholder="Поиск"
-        className="border-primary bg-background focus-visible:ring-ring/50 focus-visible:border-primary min-w-[180px] grow-1 rounded-r-none border-2 border-r-0 pr-8 outline-0 focus-visible:ring-0"
+        className="border-primary bg-background focus-visible:ring-ring/50 focus-visible:border-primary  grow-1 rounded-r-none border-2 border-r-0 pr-8 outline-0 focus-visible:ring-0"
       />
       <Button
         variant="link"
         size="icon"
         onClick={handleClearSearchValue}
-        className={cn(
-          'absolute right-12 z-50 text-foreground hover:scale-110',
-          {
-            ['invisible']: !value,
-          },
-        )}
+        className={cn('absolute right-12 text-foreground hover:scale-110', {
+          ['invisible']: !value,
+        })}
       >
         <X className="size-6" />
       </Button>
       <Button
         size="icon"
         onClick={handleSearchClick}
-        className={cn('relative z-50 w-12  rounded-l-none')}
+        className={cn('w-12 rounded-l-none')}
       >
         <Search className="size-6" />
       </Button>
