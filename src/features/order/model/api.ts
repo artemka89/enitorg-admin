@@ -4,14 +4,14 @@ import { apiClient } from '@/shared/api/api-client';
 import { API_ROUTES } from '@/shared/routes';
 
 import { orderKeys } from './query-keys';
-import type { Order, OrderStatus } from './types';
+import type { Order, OrderStatus, OrderTableItem } from './types';
 
 export const orderApi = {
   getAll: () => {
     return queryOptions({
       queryKey: [...orderKeys.all],
       queryFn: () =>
-        apiClient<{ items: Order[] }>({
+        apiClient<{ items: OrderTableItem[] }>({
           url: API_ROUTES.orders.base,
         }),
     });

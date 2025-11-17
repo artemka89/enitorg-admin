@@ -1,11 +1,11 @@
 import { STATUSES } from './constants';
-import type { OrderStatus, OrderStatuses } from './types';
+import type { OrderStatus, OrderStatusItem } from './types';
 
-export function getStatusList(currentStatus: OrderStatus) {
-  const statuses = Object.entries(STATUSES).map(([value, label]) => {
+export function getStatusList(currentStatus: OrderStatus): OrderStatusItem[] {
+  const statuses = Object.keys(STATUSES).map((key) => {
     let disabled = false;
 
-    if (currentStatus === 'PROCESSING' && value === 'PENDING') {
+    if (currentStatus === 'PROCESSING' && key === 'PENDING') {
       disabled = true;
     }
 
@@ -13,13 +13,14 @@ export function getStatusList(currentStatus: OrderStatus) {
       disabled = true;
     }
 
-    if (value === currentStatus) disabled = true;
+    if (key === currentStatus) disabled = true;
 
     return {
-      value,
-      label,
+      value: key as OrderStatus,
+      label: STATUSES[key as OrderStatus].text,
+      color: STATUSES[key as OrderStatus].color,
       disabled,
-    } as OrderStatuses & { disabled: boolean };
+    };
   });
 
   return statuses;

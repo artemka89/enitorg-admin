@@ -1,7 +1,16 @@
 import { type FC } from 'react';
 
-import { ProductsTable } from '@/features/order';
+import { OrderDitails } from '@/features/order';
+import { cn } from '@/shared/lib/cn';
 
-export const OrderPage: FC = () => {
-  return <ProductsTable />;
+interface OrderPageProps {
+  className?: string;
+}
+
+export const OrderPage: FC<OrderPageProps> = ({ className }) => {
+  return (
+    <div className={cn(className, 'container mx-auto')}>
+      <OrderDitails />
+    </div>
+  );
 };

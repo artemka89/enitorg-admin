@@ -5,6 +5,7 @@ import { AddProductPage } from '@/pages/add-product-page';
 import { CategoriesPage } from '@/pages/categories-page';
 import { CategoryPage } from '@/pages/category-page';
 import { OrderPage } from '@/pages/order-page';
+import { OrdersPage } from '@/pages/orders-page';
 import { ProductPage } from '@/pages/product-page';
 import { ROUTES } from '@/shared/routes';
 
@@ -37,6 +38,10 @@ export const router = createBrowserRouter([
       },
       {
         path: ROUTES.orders.base,
+        element: <OrdersPage />,
+      },
+      {
+        path: ROUTES.orders.byId,
         element: <OrderPage />,
       },
       { path: '*', element: <div>Страница не найдена</div> },

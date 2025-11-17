@@ -1,13 +1,19 @@
 import { href, Link } from 'react-router';
 import { type ColumnDef } from '@tanstack/react-table';
 
+import { formatDate } from '@/shared/lib/format-date';
 import { formatPrice } from '@/shared/lib/format-price';
 import { ROUTES } from '@/shared/routes';
 
-import type { Order } from '../../model/types';
-import { StatusSelector } from '../status-selector';
+import type { OrderTableItem } from '../../model/types';
+import { OrderStatus } from '../order-status';
 
-export const columns: ColumnDef<Order>[] = [
+export const columns: ColumnDef<OrderTableItem>[] = [
+  {
+    accessorKey: 'createdAt',
+    header: 'Дата заказа',
+    cell: ({ row }) => formatDate(row.original.createdAt),
+  },
   {
     accessorKey: 'number',
     header: 'Номер заказа',
@@ -42,10 +48,9 @@ export const columns: ColumnDef<Order>[] = [
     header: 'Статус заказа',
     cell: ({ row }) => {
       return (
-        <StatusSelector
-          orderId={row.original.id}
-          currentStatus={row.original.status}
-          className="max-w-48 w-full"
+        <OrderStatus
+          status={row.original.status}
+          className="max-w-48 h-9 w-full rounded-md"
         />
       );
     },
