@@ -16,6 +16,11 @@ export const API_ROUTES = {
     byId: (id: string) => `/categories/${id}`,
     updateOrders: '/categories/update-orders',
   },
+  orders: {
+    base: '/orders',
+    byId: (id: string) => `/orders/${id}`,
+    updateStatus: (id: string) => `/orders/${id}/status`,
+  },
 } as const;
 
 export const ROUTES = {
@@ -30,6 +35,10 @@ export const ROUTES = {
     byId: '/categories/:id',
     add: '/categories/add',
   },
+  orders: {
+    base: '/orders',
+    byId: '/orders/:id',
+  },
 } as const;
 
 export type PathParams = {
@@ -37,6 +46,9 @@ export type PathParams = {
     id: string;
   };
   [ROUTES.categories.byId]: {
+    id: string;
+  };
+  [ROUTES.orders.byId]: {
     id: string;
   };
 };

@@ -18,12 +18,12 @@ export const MENU_ITEMS = [
   },
   {
     title: 'Баннеры',
-    href: '/admin/banners',
+    href: '/banners',
     icon: ImageIcon,
   },
   {
     title: 'Пользователи',
-    href: '/admin/users',
+    href: '/users',
     icon: Users,
   },
   {
@@ -38,12 +38,12 @@ export const MENU_ITEMS = [
   },
   {
     title: 'Заказы',
-    href: '/admin/orders',
+    href: '/orders',
     icon: ShoppingCart,
   },
   {
     title: 'Настройки',
-    href: '/admin/settings',
+    href: '/settings',
     icon: Settings,
   },
 ];
