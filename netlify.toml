@@ -3,3 +3,9 @@
   to = "https://enitorg.ru/:splat"
   status = 200
   force = true
+
+[[redirects]]
+  from = "/storage/*"
+  to = "https://images.enitorg.ru/:splat"
+  status = 200
+  force = true

@@ -5,8 +5,6 @@ import { defineConfig, loadEnv } from 'vite';
 
 // https://vite.dev/config/
 export default defineConfig(({ mode }) => {
-  // TODO: fix proxy for images
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const env = loadEnv(mode, process.cwd(), '');
 
   return {
@@ -16,14 +14,14 @@ export default defineConfig(({ mode }) => {
         '@': path.resolve(__dirname, './src'),
       },
     },
-    // server: {
-    //   proxy: {
-    //     '/storage': {
-    //       target: env.VITE_STORAGE_API_URL,
-    //       changeOrigin: true,
-    //       rewrite: (path) => path.replace(/^\/storage/, ''),
-    //     },
-    //   },
-    // },
+    server: {
+      proxy: {
+        '/storage': {
+          target: env.VITE_STORAGE_API_URL,
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/storage/, ''),
+        },
+      },
+    },
   };
 });

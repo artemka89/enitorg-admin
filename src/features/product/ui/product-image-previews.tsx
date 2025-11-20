@@ -1,7 +1,6 @@
 import { type FC } from 'react';
 import { X } from 'lucide-react';
 
-import { privateConfig } from '@/shared/config';
 import { cn } from '@/shared/lib/cn';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent } from '@/shared/ui/card';
@@ -32,7 +31,7 @@ export const ProductImagePreviews: FC<ProductImagePreviewsProps> = ({
           <CardContent className="p-0">
             <div className="relative aspect-square overflow-hidden rounded-md">
               <img
-                src={`${privateConfig.VITE_STORAGE_API_URL}${url.replace('/storage', '')}`}
+                src={url}
                 alt={url}
                 className="h-full w-full object-contain aspect-square rounded-md"
               />
