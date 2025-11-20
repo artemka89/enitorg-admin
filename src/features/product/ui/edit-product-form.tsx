@@ -107,7 +107,11 @@ export const EditProductForm: FC<EditProductFormProps> = ({
                 <FormItem>
                   <FormLabel>Код товара *:</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Введите код товара" />
+                    <Input
+                      disabled
+                      {...field}
+                      placeholder="Введите код товара"
+                    />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
@@ -254,12 +258,8 @@ export const EditProductForm: FC<EditProductFormProps> = ({
           />
         </div>
         <div className="flex justify-end gap-2">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => navigate(ROUTES.products.base)}
-          >
-            Отмена
+          <Button type="button" variant="outline" onClick={() => form.reset()}>
+            Сбросить
           </Button>
           <Button type="submit" disabled={false}>
             Сохранить

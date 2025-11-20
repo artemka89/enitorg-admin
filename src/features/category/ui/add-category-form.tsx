@@ -1,10 +1,10 @@
-import { type FC, useEffect, useMemo } from 'react';
+import { type FC, useEffect } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { cyrillicToTranslit } from '@/shared/lib/cyrillic-to-translit';
-import { API_ROUTES } from '@/shared/routes';
+import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
 import {
   Form,
@@ -33,15 +33,10 @@ export const AddCategoryForm: FC = () => {
   const { data: categories } = useGetCategories({ withChildren: true });
   const { mutate: addCategory, isPending } = useCreateCategory();
 
-  const getMaxOrder = useMemo(() => {
-    return Math.max(...(categories?.items.map((item) => item.order) || [0]));
-  }, [categories?.items]);
-
   const form = useForm<AddCategorySchema>({
     defaultValues: {
       name: '',
       slug: '',
-      order: getMaxOrder,
       parentId: 'none',
     },
     resolver: zodResolver(AddCategorySchema),
@@ -56,12 +51,12 @@ export const AddCategoryForm: FC = () => {
     }
   }, [watchName, form]);
 
-  const onSubmit = async (data: AddCategorySchema) => {
+  const onSubmit = (data: AddCategorySchema) => {
     const parentId = data.parentId === 'none' ? undefined : data.parentId;
     addCategory(
       { ...data, parentId },
       {
-        onSuccess: () => navigate(API_ROUTES.categories.base),
+        onSuccess: () => navigate(ROUTES.categories.base),
       },
     );
   };

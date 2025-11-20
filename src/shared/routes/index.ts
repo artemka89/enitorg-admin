@@ -7,24 +7,27 @@ export const API_ROUTES = {
     me: '/auth/me',
   },
   products: {
-    base: '/products',
-    byId: (id?: string) => `/products/${id}`,
-    uploadImage: '/products/upload-image',
+    base: '/admin/products',
+    byId: (id?: string) => `/admin/products/${id}`,
+    uploadImage: '/admin/products/upload-image',
   },
   categories: {
-    base: '/categories',
-    byId: (id: string) => `/categories/${id}`,
-    updateOrders: '/categories/update-orders',
+    base: '/admin/categories',
+    byId: (id: string) => `/admin/categories/${id}`,
+    updateOrders: '/admin/categories/update-orders',
   },
   orders: {
-    base: '/orders',
-    byId: (id: string) => `/orders/${id}`,
-    updateStatus: (id: string) => `/orders/${id}/status`,
+    base: '/admin/orders',
+    byId: (id: string) => `/admin/orders/${id}`,
+    updateStatus: (id: string) => `/admin/orders/${id}/status`,
   },
 } as const;
 
 export const ROUTES = {
   home: '/',
+  login: {
+    base: '/login',
+  },
   products: {
     base: '/products',
     byId: '/products/:id',

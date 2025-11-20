@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 
 import { cyrillicToTranslit } from '@/shared/lib/cyrillic-to-translit';
-import { API_ROUTES } from '@/shared/routes';
+import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
 import {
   Form,
@@ -45,7 +45,6 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
     values: {
       name: currentCategory?.name || '',
       slug: currentCategory?.slug || '',
-      order: currentCategory?.order || 0,
       parentId: currentCategory?.parentId || 'none',
     },
     resolver: zodResolver(AddCategorySchema),
@@ -64,7 +63,7 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
     updateCategory(
       { id, ...data },
       {
-        onSuccess: () => navigate(API_ROUTES.categories.base),
+        onSuccess: () => navigate(ROUTES.categories.base),
       },
     );
   };

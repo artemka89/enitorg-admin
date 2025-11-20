@@ -9,9 +9,6 @@ export const AddCategorySchema = z.object({
     .string()
     .min(2, { error: 'URL-адрес должен быть не менее 2 символов' })
     .max(50, { error: 'URL-адрес должен быть не более 50 символов' }),
-  order: z
-    .number()
-    .positive({ error: 'Порядковый номер должен быть больше 0' }),
   parentId: z.string().optional(),
 });
 

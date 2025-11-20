@@ -23,7 +23,6 @@ export const productApi = {
         apiClient<PaginatedResponse<Product>>({
           url: API_ROUTES.products.base,
           signal,
-          credentials: 'same-origin',
           params: {
             ...params,
             cursor: pageParam,
