@@ -8,7 +8,7 @@ import { Typography } from '@/shared/ui/typography';
 import { useGetOrder } from '../../model/use-get-order';
 import { StatusSelector } from '../status-selector';
 
-import { OrderDedcriptionText } from './order-description-text';
+import { OrderDescriptionText } from './order-description-text';
 import { OrderItem } from './order-item';
 
 export const OrderDitails: FC = () => {
@@ -31,31 +31,32 @@ export const OrderDitails: FC = () => {
         />
       </div>
       <div className="mb-4 max-w-[570px]">
-        <OrderDedcriptionText
+        <OrderDescriptionText
           title="Дата заказа"
           text={formatDate(data.createdAt, true)}
         />
         {data.customerName && (
-          <OrderDedcriptionText title="Имя клиента" text={data.customerName} />
+          <OrderDescriptionText title="Имя клиента" text={data.customerName} />
         )}
-        <OrderDedcriptionText
+        <OrderDescriptionText
           title="Телефон клиента"
           text={data.customerPhone}
         />
         {data.customerEmail && (
-          <OrderDedcriptionText
+          <OrderDescriptionText
             title="Email клиента"
             text={data.customerEmail}
           />
         )}
-        <OrderDedcriptionText
+        <OrderDescriptionText
           title="Сумма заказа"
           text={formatPrice(data.totalPrice)}
         />
       </div>
 
-      <Typography tag="p" size="lg" className="mb-2">
-        Коментарий клиента: {data.customerComment}
+      <Typography tag="p" size="base" className="mb-2">
+        Комментарий клиента:{' '}
+        <span className="font-semibold">{data.customerComment}</span>
       </Typography>
 
       <Typography tag="h3" size="2xl" weight="bold" className="mb-2">

@@ -3,13 +3,13 @@ import { type FC } from 'react';
 import { cn } from '@/shared/lib/cn';
 import { Typography } from '@/shared/ui/typography';
 
-interface OrderDedcriptionTextProps {
+interface OrderDescriptionTextProps {
   title: string;
   text: string;
   className?: string;
 }
 
-export const OrderDedcriptionText: FC<OrderDedcriptionTextProps> = ({
+export const OrderDescriptionText: FC<OrderDescriptionTextProps> = ({
   title,
   text,
   className,
@@ -17,7 +17,7 @@ export const OrderDedcriptionText: FC<OrderDedcriptionTextProps> = ({
   return (
     <Typography
       tag="p"
-      size="lg"
+      size="base"
       className={cn(className, 'w-full flex gap-1')}
     >
       <span>{title}:</span>
