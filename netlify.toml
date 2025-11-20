@@ -3,4 +3,3 @@
   to = "https://enitorg.ru/:splat"
   status = 200
   force = true
-  headers = {session-token = "Netlify"}
