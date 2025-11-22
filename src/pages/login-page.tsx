@@ -2,6 +2,7 @@ import { type FC } from 'react';
 import { Navigate } from 'react-router';
 
 import { LoginForm, useGetUser } from '@/features/auth';
+import { ThemeToggleButton } from '@/features/theme-toggle';
 import { ROUTES } from '@/shared/routes';
 
 export const LoginPage: FC = () => {
@@ -12,7 +13,8 @@ export const LoginPage: FC = () => {
   }
 
   return (
-    <div className="min-w-screen min-h-screen flex items-center justify-center">
+    <div className="relative min-w-screen min-h-screen flex items-center justify-center">
+      <ThemeToggleButton className="absolute top-6 right-6" />
       <LoginForm className="max-w-[450px] w-full" />
     </div>
   );

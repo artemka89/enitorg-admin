@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 
 import { GreeningUser, LogoutButton } from '@/features/auth';
+import { ThemeToggleButton } from '@/features/theme-toggle';
 import { cn } from '@/shared/lib/cn';
 
 interface HeaderProps {
@@ -18,8 +19,9 @@ export const Header: FC<HeaderProps> = ({ className }) => {
       <div className="flex items-center justify-between w-full gap-4 px-4">
         <div></div>
         <div className="self-end flex items-center gap-4">
-          <GreeningUser className="text-secondary font-semibold" />
+          <GreeningUser className="text-secondary font-semibold dark:text-foreground" />
           <LogoutButton />
+          <ThemeToggleButton />
         </div>
       </div>
     </header>
