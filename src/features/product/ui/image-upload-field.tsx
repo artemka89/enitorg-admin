@@ -3,6 +3,7 @@ import { Link, Plus } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
 import { useUploadProductImage } from '../model/use-upload-product-image';
 
@@ -15,6 +16,7 @@ interface ImageUploadFieldProps {
   fileName: string;
   onImagesChange: (urls: string[]) => void;
   disabled?: boolean;
+  isCodeFilled?: boolean;
 }
 
 export function ImageUploadField({
@@ -56,13 +58,24 @@ export function ImageUploadField({
         onCrop={handleUploadImage}
         fileName={fileName}
         buttonTrigger={
-          <Button
-            type="button"
-            disabled={disabled || isPending || imageUrls.length >= MAX_IMAGES}
-          >
-            <Plus className="h-4 w-4" />
-            Загрузить изображение
-          </Button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <span className="inline-block">
+                <Button
+                  type="button"
+                  disabled={
+                    disabled || isPending || imageUrls.length >= MAX_IMAGES
+                  }
+                >
+                  <Plus className="h-4 w-4" />
+                  Загрузить изображение
+                </Button>
+              </span>
+            </TooltipTrigger>
+            <TooltipContent hidden={!disabled} className="max-w-56 text-center">
+              Для загрузки изображений необходимо заполнить код товара
+            </TooltipContent>
+          </Tooltip>
         }
       />
 
