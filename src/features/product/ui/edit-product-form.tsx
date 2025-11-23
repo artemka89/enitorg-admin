@@ -17,6 +17,7 @@ import {
 } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { SortableImagePreviews } from '@/shared/ui/sortable-image-previews';
 import { Typography } from '@/shared/ui/typography';
 
 import { ProductFormSchema } from '../model/product-form-schema';
@@ -25,7 +26,6 @@ import { useGetProduct } from '../model/use-get-product';
 
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ImageUploadField } from './image-upload-field';
-import { ProductImagePreviews } from './product-image-previews';
 import { SpecificationFields } from './specification-fields';
 
 interface EditProductFormProps {
@@ -219,7 +219,7 @@ export const EditProductForm: FC<EditProductFormProps> = ({
                     onImagesChange={field.onChange}
                     fileName={getImageName()}
                   />
-                  <ProductImagePreviews
+                  <SortableImagePreviews
                     imageUrls={field.value}
                     onImagesChange={field.onChange}
                     className="mt-2"
