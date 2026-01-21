@@ -1,9 +1,8 @@
-import { type FC, useEffect } from 'react';
+import { type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { cyrillicToTranslit } from '@/shared/lib/cyrillic-to-translit';
 import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
 import {
@@ -22,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
+import { Spinner } from '@/shared/ui/spinner';
 
 import { AddCategorySchema } from '../model/categories-schemas';
 import { useCreateCategory } from '../model/use-create-category';
@@ -30,31 +30,23 @@ import { useGetCategories } from '../model/use-get-categories';
 export const AddCategoryForm: FC = () => {
   const navigate = useNavigate();
 
-  const { data: categories } = useGetCategories({ withChildren: true });
+  const { data: categories, isLoading: isLoadingCategories } = useGetCategories(
+    { onlyParents: true },
+  );
   const { mutate: addCategory, isPending } = useCreateCategory();
 
   const form = useForm<AddCategorySchema>({
     defaultValues: {
       name: '',
-      slug: '',
       parentId: 'none',
     },
     resolver: zodResolver(AddCategorySchema),
   });
 
-  const watchName = form.watch('name');
-
-  useEffect(() => {
-    if (watchName) {
-      const slug = cyrillicToTranslit(watchName);
-      form.setValue('slug', slug);
-    }
-  }, [watchName, form]);
-
   const onSubmit = (data: AddCategorySchema) => {
-    const parentId = data.parentId === 'none' ? undefined : data.parentId;
+    const parentId = data.parentId === 'none' ? null : data.parentId;
     addCategory(
-      { ...data, parentId },
+      { ...data, parentId: parentId || null },
       {
         onSuccess: () => navigate(ROUTES.categories.base),
       },
@@ -65,8 +57,13 @@ export const AddCategoryForm: FC = () => {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className="space-y-6 max-w-2xl"
+        className="relative space-y-6 max-w-2xl"
       >
+        {isLoadingCategories && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Spinner />
+          </div>
+        )}
         <FormField
           control={form.control}
           name="name"
@@ -84,25 +81,6 @@ export const AddCategoryForm: FC = () => {
         <div>
           <FormField
             control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>URL-адрес (slug) *:</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="url-адрес-категории" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <p className="text-muted-foreground text-sm">
-            Автоматически генерируется из названия. Можно редактировать.
-          </p>
-        </div>
-
-        <div>
-          <FormField
-            control={form.control}
             name="parentId"
             render={({ field }) => (
               <FormItem>
@@ -110,7 +88,7 @@ export const AddCategoryForm: FC = () => {
                 <FormControl>
                   <Select
                     onValueChange={(value) =>
-                      field.onChange(value === 'none' ? null : value)
+                      field.onChange(value === 'none' ? undefined : value)
                     }
                     value={field.value}
                   >

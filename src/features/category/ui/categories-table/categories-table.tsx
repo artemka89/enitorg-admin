@@ -46,9 +46,7 @@ import { columns } from './columns';
 import { DraggableRow } from './draggable-row';
 
 export const CategoriesTable: FC = () => {
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
-    id: false,
-  });
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
 
@@ -77,11 +75,12 @@ export const CategoriesTable: FC = () => {
 
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
+
     if (active && over && active.id !== over.id) {
       const oldIndex = dataIds.indexOf(active.id as string);
       const newIndex = dataIds.indexOf(over.id as string);
 
-      updateOrder({ oldIndex, newIndex });
+      updateOrder({ id: active.id.toString(), oldIndex, newIndex });
     }
   }
 

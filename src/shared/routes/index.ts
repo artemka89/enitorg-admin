@@ -12,9 +12,9 @@ export const API_ROUTES = {
     uploadImage: '/admin/products/upload-image',
   },
   categories: {
-    base: '/admin/categories',
-    byId: (id: string) => `/admin/categories/${id}`,
-    updateOrders: '/admin/categories/update-orders',
+    base: '/categories',
+    byId: (id: string) => `/categories/${id}`,
+    updateOrders: '/categories/update-order',
   },
   orders: {
     base: '/admin/orders',

@@ -89,7 +89,7 @@ export const ImageCropperModal: FC<ImageCropperModalProps> = ({
 
   return (
     <Dialog>
-      {buttonTrigger && <DialogTrigger asChild>{buttonTrigger}</DialogTrigger>}
+      {buttonTrigger && <DialogTrigger>{buttonTrigger}</DialogTrigger>}
       <DialogContent className="min-w-4xl" showCloseButton={false}>
         <DialogTitle>Загрузка изображения</DialogTitle>
 

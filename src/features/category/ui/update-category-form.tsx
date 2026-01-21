@@ -1,9 +1,8 @@
-import { type FC, useEffect } from 'react';
+import { type FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 
-import { cyrillicToTranslit } from '@/shared/lib/cyrillic-to-translit';
 import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
 import {
@@ -22,6 +21,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/shared/ui/select';
+import { Spinner } from '@/shared/ui/spinner';
 
 import { AddCategorySchema } from '../model/categories-schemas';
 import { useGetCategories } from '../model/use-get-categories';
@@ -34,7 +34,8 @@ import { RemoveCategoryModal } from './remove-category-modal';
 export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
   const navigate = useNavigate();
 
-  const { data: categories } = useGetCategories();
+  const { data: categories, isLoading: isLoadingCategories } =
+    useGetCategories();
   const { data: currentCategory } = useGetCategory(id);
   const { mutate: updateCategory, isPending: isPendingUpdate } =
     useUpdateCategory();
@@ -44,24 +45,15 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
   const form = useForm<AddCategorySchema>({
     values: {
       name: currentCategory?.name || '',
-      slug: currentCategory?.slug || '',
       parentId: currentCategory?.parentId || 'none',
     },
     resolver: zodResolver(AddCategorySchema),
   });
 
-  const watchName = form.watch('name');
-
-  useEffect(() => {
-    if (watchName) {
-      const slug = cyrillicToTranslit(watchName);
-      form.setValue('slug', slug);
-    }
-  }, [watchName, form]);
-
   const handleSubmit = async (data: AddCategorySchema) => {
+    const parentId = data.parentId === 'none' ? null : data.parentId;
     updateCategory(
-      { id, ...data },
+      { id, ...data, parentId: parentId || null },
       {
         onSuccess: () => navigate(ROUTES.categories.base),
       },
@@ -75,12 +67,19 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
   const isDeleteProtected =
     !!currentCategory?.parentId || !!currentCategory?.totalProducts;
 
+  const withChildren = !!currentCategory?.children?.length;
+
   return (
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleSubmit)}
-        className="space-y-6 max-w-2xl"
+        className="space-y-6 max-w-2xl relative"
       >
+        {isLoadingCategories && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Spinner />
+          </div>
+        )}
         <FormField
           control={form.control}
           name="name"
@@ -98,36 +97,15 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
         <div>
           <FormField
             control={form.control}
-            name="slug"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>URL-адрес (slug) *:</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="url-адрес-категории" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <p className="text-muted-foreground text-sm">
-            Автоматически генерируется из названия. Можно редактировать.
-          </p>
-        </div>
-
-        <div>
-          <FormField
-            control={form.control}
             name="parentId"
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Родительская категория:</FormLabel>
                 <FormControl>
                   <Select
-                    onValueChange={(value) =>
-                      field.onChange(value === 'none' ? null : value)
-                    }
+                    onValueChange={(value) => field.onChange(value)}
                     value={field.value}
-                    disabled={!!currentCategory?.children?.length}
+                    disabled={withChildren}
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue placeholder="Выберите родительскую категорию (необязательно)" />
@@ -136,11 +114,13 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
                       <SelectItem value="none">
                         Без родительской категории
                       </SelectItem>
-                      {categories?.items.map((category) => (
-                        <SelectItem key={category.id} value={category.id}>
-                          {category.name}
-                        </SelectItem>
-                      ))}
+                      {categories?.items
+                        .filter((c) => c.id !== id)
+                        .map((category) => (
+                          <SelectItem key={category.id} value={category.id}>
+                            {category.name}
+                          </SelectItem>
+                        ))}
                     </SelectContent>
                   </Select>
                 </FormControl>

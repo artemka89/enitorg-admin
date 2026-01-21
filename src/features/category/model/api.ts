@@ -7,13 +7,13 @@ import { categoryKeys } from './query-keys';
 import type { Category, CreateCategory, UpdateCategory } from './types';
 
 export const categoryApi = {
-  getAll: (withChildren?: boolean) => {
+  getAll: (onlyParents?: boolean) => {
     return queryOptions({
-      queryKey: [...categoryKeys.all, withChildren],
+      queryKey: [...categoryKeys.all, onlyParents],
       queryFn: () =>
         apiClient<{ items: Category[] }>({
           url: API_ROUTES.categories.base,
-          params: { withChildren },
+          params: { onlyParents },
         }),
     });
   },
@@ -43,11 +43,11 @@ export const categoryApi = {
       body: category,
     });
   },
-  updateOrders: (data: { oldIndex: number; newIndex: number }) => {
+  updateOrders: (data: { id: string; oldIndex: number; newIndex: number }) => {
     return apiClient({
       url: API_ROUTES.categories.updateOrders,
       method: 'PUT',
-      body: data,
+      body: { id: data.id, newOrder: data.newIndex + 1 },
     });
   },
   remove: (id: string) =>

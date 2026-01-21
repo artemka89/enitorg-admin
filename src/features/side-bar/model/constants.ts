@@ -27,7 +27,7 @@ export const MENU_ITEMS = [
     icon: Users,
   },
   {
-    title: 'Продукты',
+    title: 'Товары',
     href: ROUTES.products.base,
     icon: Package,
   },

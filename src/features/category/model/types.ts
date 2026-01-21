@@ -4,19 +4,17 @@ export interface Category {
   slug: string;
   totalProducts: number;
   order: number;
-  parentId?: string;
+  parentId: string | null;
   children?: Omit<Category, 'children'>[];
 }
 
 export interface CreateCategory {
   name: string;
-  slug: string;
-  parentId?: string;
+  parentId: string | null;
 }
 
 export interface UpdateCategory {
   id: string;
   name: string;
-  slug: string;
-  parentId?: string;
+  parentId: string | null;
 }

@@ -18,6 +18,7 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
 import { SortableImagePreviews } from '@/shared/ui/sortable-image-previews';
+import { Spinner } from '@/shared/ui/spinner';
 import { Typography } from '@/shared/ui/typography';
 
 import { ProductFormSchema } from '../model/product-form-schema';
@@ -37,7 +38,7 @@ export const EditProductForm: FC<EditProductFormProps> = ({
   id,
   className,
 }) => {
-  const { data: product } = useGetProduct(id);
+  const { data: product, isLoading: isLoadingProduct } = useGetProduct(id);
   const { mutate: update } = useEditProduct();
 
   const navigate = useNavigate();
@@ -78,8 +79,13 @@ export const EditProductForm: FC<EditProductFormProps> = ({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(onSubmit)}
-        className={cn(className, 'space-y-6')}
+        className={cn(className, 'space-y-6 relative')}
       >
+        {isLoadingProduct && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+            <Spinner />
+          </div>
+        )}
         <Typography tag="h1" size="3xl" weight="bold">
           {product?.name}
         </Typography>
