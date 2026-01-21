@@ -4,12 +4,12 @@ import { ChevronDown, ChevronRight } from 'lucide-react';
 import { cn } from '@/shared/lib/cn';
 import { Button } from '@/shared/ui/button';
 
-import { type ProductCategory } from '../../../product/model/types';
+import type { Category } from '../../model/types';
 
 import { SelectedCategoryNames } from './selected-category-names';
 
 interface ToggleCategoryProps {
-  categories: ProductCategory[];
+  categories: Category[];
   selectedCategories: string[];
   onSelectionChange: (selectedIds: string[]) => void;
 }
@@ -39,7 +39,7 @@ export const ToggleCategory: React.FC<ToggleCategoryProps> = ({
     return selectedCategories.includes(categoryId);
   };
 
-  const isCategoryWithChildren = (category: ProductCategory): boolean => {
+  const isCategoryWithChildren = (category: Category): boolean => {
     return category.children ? category.children.length > 0 : false;
   };
 
@@ -48,7 +48,7 @@ export const ToggleCategory: React.FC<ToggleCategoryProps> = ({
     parentId,
   }: {
     id: string;
-    parentId?: string;
+    parentId: string | null;
   }) => {
     let newSelectedCategories = [];
 

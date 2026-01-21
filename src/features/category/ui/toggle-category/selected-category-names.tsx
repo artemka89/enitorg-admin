@@ -5,10 +5,10 @@ import { cn } from '@/shared/lib/cn';
 import { Badge } from '@/shared/ui/badge';
 import { Button } from '@/shared/ui/button';
 
-import { type ProductCategory } from '../../../product/model/types';
+import type { Category } from '../../model/types';
 
 interface SelectedCategoryNamesProps {
-  items: ProductCategory[];
+  items: Category[];
   selectedIds: string[];
   onDelete: (ids: string[]) => void;
   className?: string;
