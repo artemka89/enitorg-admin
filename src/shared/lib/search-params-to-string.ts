@@ -15,5 +15,12 @@ export function searchParamsToString(params?: Record<string, unknown>) {
 
     searchParams.set(key, String(value));
   });
-  return '?' + searchParams.toString();
+
+  const searchParamsString = searchParams.toString();
+
+  if (!searchParamsString.trim()) {
+    return '';
+  }
+
+  return '?' + searchParamsString;
 }
