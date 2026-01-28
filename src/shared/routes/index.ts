@@ -14,7 +14,7 @@ export const API_ROUTES = {
   categories: {
     base: '/admin/categories',
     byId: (id: string) => `/admin/categories/${id}`,
-    updateOrders: '/admin/categories/update-order',
+    updateOrders: '/admin/categories/update-orders',
   },
   orders: {
     base: '/admin/orders',
