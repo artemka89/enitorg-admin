@@ -7,7 +7,6 @@ import {
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
-  type UniqueIdentifier,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -53,11 +52,6 @@ export const CategoriesTable: FC = () => {
   const { data: categories, isLoading } = useGetCategories();
   const { mutate: updateOrder } = useUpdateOrderCategories();
 
-  const dataIds = useMemo<UniqueIdentifier[]>(
-    () => categories?.items.map(({ id }) => id) || [],
-    [categories?.items],
-  );
-
   const table = useReactTable({
     data: categories?.items || [],
     columns,
@@ -73,14 +67,44 @@ export const CategoriesTable: FC = () => {
     },
   });
 
+  const flatRows = table.getRowModel().rows;
+
+  const rowIds = useMemo(
+    () => flatRows.map((row) => row.original.id),
+    [flatRows],
+  );
+
   function handleDragEnd(event: DragEndEvent) {
     const { active, over } = event;
 
-    if (active && over && active.id !== over.id) {
-      const oldIndex = dataIds.indexOf(active.id as string);
-      const newIndex = dataIds.indexOf(over.id as string);
+    const activeParentId = active.data.current?.parentId as string | undefined;
+    const overParentId = over?.data.current?.parentId as string | undefined;
+
+    if (!over || active.id === over.id) return;
+
+    if (!activeParentId && !overParentId) {
+      const oldIndex = rowIds.indexOf(active.id as string);
+      const newIndex = rowIds.indexOf(over.id as string);
 
       updateOrder({ id: active.id.toString(), oldIndex, newIndex });
+      return;
+    }
+
+    if (activeParentId !== overParentId) return;
+
+    const parent = categories?.items.find(
+      (c) => c.id === active.data.current?.parentId,
+    );
+    if (parent?.children) {
+      const oldIndex = parent.children.findIndex((c) => c.id === active.id);
+      const newIndex = parent.children.findIndex((c) => c.id === over.id);
+
+      updateOrder({
+        id: active.id.toString(),
+        oldIndex,
+        newIndex,
+        parentId: parent.id,
+      });
     }
   }
 
@@ -129,7 +153,7 @@ export const CategoriesTable: FC = () => {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               <SortableContext
-                items={dataIds}
+                items={rowIds}
                 strategy={verticalListSortingStrategy}
               >
                 {table.getRowModel().rows.map((row) => (
