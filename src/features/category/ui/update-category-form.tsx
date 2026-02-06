@@ -65,7 +65,7 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
   };
 
   const withChildren = !!currentCategory?.children?.length;
-  const isDeleteProtected = !!currentCategory?.totalProducts && withChildren;
+  const isDeleteProtected = !!currentCategory?.totalProducts || withChildren;
 
   return (
     <Form {...form}>
