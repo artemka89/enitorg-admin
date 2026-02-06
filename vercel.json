@@ -1,9 +1,19 @@
 {
-  "version": 2,
   "rewrites": [
     {
-      "source": "/(.*)",
-      "destination": "/index.html"
+      "source": "/api/:path*",
+      "destination": "https://enitorg.ru/:path*"
+    },
+    {
+      "source": "/storage/:path*",
+      "destination": "https://images.enitorg.ru/:path*"
+    }
+  ],
+  "redirects": [
+    {
+      "source": "/((?!api/|storage/).*)",
+      "destination": "/index.html",
+      "permanent": false
     }
   ]
 }
