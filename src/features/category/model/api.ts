@@ -1,6 +1,7 @@
 import { queryOptions } from '@tanstack/react-query';
 
 import { apiClient } from '@/shared/api/api-client';
+import { cyrillicToTranslit } from '@/shared/lib/cyrillic-to-translit';
 import { API_ROUTES } from '@/shared/routes';
 
 import { categoryKeys } from './query-keys';
@@ -29,18 +30,23 @@ export const categoryApi = {
     });
   },
   create: (data: CreateCategory) => {
+    const slug = cyrillicToTranslit(data.name);
+
     return apiClient({
       url: API_ROUTES.categories.base,
       method: 'POST',
-      body: data,
+      body: { ...data, slug },
     });
   },
   update: (data: UpdateCategory) => {
     const { id, ...category } = data;
+
+    const slug = cyrillicToTranslit(data.name);
+
     return apiClient({
       url: API_ROUTES.categories.byId(id),
       method: 'PUT',
-      body: category,
+      body: { ...category, slug },
     });
   },
   updateOrders: (data: { id: string; oldIndex: number; newIndex: number }) => {
