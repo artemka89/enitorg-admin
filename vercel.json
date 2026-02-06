@@ -12,12 +12,5 @@
       "source": "/(.*)",
       "destination": "/index.html"
     }
-  ],
-  "redirects": [
-    {
-      "source": "/((?!api/|storage/).*)",
-      "destination": "/index.html",
-      "permanent": false
-    }
   ]
 }
