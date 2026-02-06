@@ -1,10 +1,6 @@
 {
   "rewrites": [
     {
-      "source": "/api/:path*",
-      "destination": "https://enitorg.ru/:path*"
-    },
-    {
       "source": "/storage/:path*",
       "destination": "https://images.enitorg.ru/:path*"
     },
