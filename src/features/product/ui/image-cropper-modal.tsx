@@ -3,6 +3,7 @@ import { type FC, useCallback, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { RotateCw, Upload } from 'lucide-react';
 
+import { centerImageOnSquare } from '@/shared/lib/center-image-on-square';
 import {
   createCroppedImage,
   type CropArea,
@@ -55,8 +56,17 @@ export const ImageCropperModal: FC<ImageCropperModalProps> = ({
   );
 
   const handleFileSelect = async () => {
-    const file = await selectFile('image/*');
-    setImage(file);
+    const selectedFile = await selectFile('image/*');
+    if (!selectedFile) {
+      return;
+    }
+    try {
+      const centeredImageFile = await centerImageOnSquare(selectedFile);
+      setImage(centeredImageFile);
+    } catch (error) {
+      console.error('Error centering image:', error);
+      setImage(selectedFile);
+    }
   };
 
   const handleCrop = async () => {
