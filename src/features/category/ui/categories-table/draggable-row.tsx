@@ -3,22 +3,18 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { flexRender, type Row } from '@tanstack/react-table';
 
-import { cn } from '@/shared/lib/cn';
 import { TableCell, TableRow } from '@/shared/ui/table';
 
 import type { Category } from '../../model/types';
 
 export const DraggableRow = ({ row }: { row: Row<Category> }) => {
-  const { transform, transition, setNodeRef, isDragging, over } = useSortable({
+  const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
     data: {
       parentId: row.original.parentId,
+      hasChildren: !!row.original.children?.length,
     },
   });
-
-  const isDroppable = isDragging
-    ? row.original.parentId === over?.data.current?.parentId
-    : true;
 
   const style: CSSProperties = {
     transform: CSS.Transform.toString(transform),
@@ -33,7 +29,6 @@ export const DraggableRow = ({ row }: { row: Row<Category> }) => {
       key={row.id}
       data-state={row.getIsSelected() && 'selected'}
       style={style}
-      className={cn({ 'cursor-no-drop!': !isDroppable })}
     >
       {row.getVisibleCells().map((cell) => (
         <TableCell key={cell.id}>
