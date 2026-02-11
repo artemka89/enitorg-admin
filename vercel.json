@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/storage/:path*",
+      "destination": "https://images.enitorg.ru/:path*"
+    },
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}

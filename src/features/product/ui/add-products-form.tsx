@@ -6,7 +6,7 @@ import { Plus, Trash2 } from 'lucide-react';
 
 import { CategoriesModal } from '@/features/category/ui/toggle-category/categories-modal';
 import { cn } from '@/shared/lib/cn';
-import { API_ROUTES } from '@/shared/routes';
+import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/shared/ui/card';
 import {
@@ -65,7 +65,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
     mutate(data.products, {
       onSuccess: () => {
         form.reset();
-        navigate(API_ROUTES.products.base);
+        navigate(ROUTES.products.base);
       },
     });
   };
