@@ -35,28 +35,29 @@ export const CategorySelector: FC<CategorySelectorProps> = ({
         <SelectTrigger className="min-w-[180px] cursor-pointer">
           <SelectValue />
         </SelectTrigger>
-        <SelectContent>
+        <SelectContent align="end">
           <SelectItem value={'all'} className="cursor-pointer">
             Все
           </SelectItem>
           {data?.items.map((category) => (
             <div key={category.id}>
-              <SelectItem value={category.slug} className="cursor-pointer">
+              <SelectItem
+                value={category.slug}
+                className="cursor-pointer bg-primary/30 my-1"
+              >
                 {category.name}
               </SelectItem>
-              <div className="ml-3">
-                {category.children?.map((child) => {
-                  return (
-                    <SelectItem
-                      key={child.id}
-                      value={child.slug}
-                      className="cursor-pointer"
-                    >
-                      {child.name}
-                    </SelectItem>
-                  );
-                })}
-              </div>
+              {category.children?.map((child) => {
+                return (
+                  <SelectItem
+                    key={child.id}
+                    value={child.slug}
+                    className="cursor-pointer pl-6"
+                  >
+                    {child.name}
+                  </SelectItem>
+                );
+              })}
             </div>
           ))}
         </SelectContent>
