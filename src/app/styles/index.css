@@ -157,3 +157,7 @@
 .crop-area-grid::before {
   border-color: #00ff2a !important;
 }
+
+.is-drop-forbidden * {
+  cursor: no-drop !important;
+}

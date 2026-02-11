@@ -2,12 +2,13 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 import { categoryApi } from './api';
+import type { Category } from './types';
 
 export function useUpdateOrderCategories() {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: categoryApi.updateOrders,
-    onMutate: async ({ oldIndex, newIndex }) => {
+    onMutate: async ({ oldIndex, newIndex, parentId }) => {
       const queryKey = categoryApi.getAll().queryKey;
 
       await queryClient.cancelQueries({
@@ -16,13 +17,35 @@ export function useUpdateOrderCategories() {
 
       const previousItems = queryClient.getQueryData(queryKey);
 
-      const reorderItems = arrayMove(
-        previousItems?.items || [],
-        oldIndex,
-        newIndex,
-      ).map((item, index) => ({ ...item, order: index + 1 }));
+      if (!previousItems) {
+        return;
+      }
 
-      queryClient.setQueryData(queryKey, { items: reorderItems });
+      const updateItems = (items: Category[]) =>
+        arrayMove(items, oldIndex, newIndex).map((item, index) => ({
+          ...item,
+          order: index + 1,
+        }));
+
+      if (parentId) {
+        const updatedItems = previousItems.items.map((item) =>
+          item.id === parentId
+            ? {
+                ...item,
+                children: updateItems(item.children || []),
+              }
+            : item,
+        );
+        queryClient.setQueryData(queryKey, {
+          ...previousItems,
+          items: updatedItems,
+        });
+      } else {
+        queryClient.setQueryData(queryKey, {
+          ...previousItems,
+          items: updateItems(previousItems.items),
+        });
+      }
 
       return { previousItems };
     },

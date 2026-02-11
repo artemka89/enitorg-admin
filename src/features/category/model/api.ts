@@ -10,7 +10,7 @@ import type { Category, CreateCategory, UpdateCategory } from './types';
 export const categoryApi = {
   getAll: (onlyParents?: boolean) => {
     return queryOptions({
-      queryKey: [...categoryKeys.all, onlyParents],
+      queryKey: [...categoryKeys.list(onlyParents)],
       queryFn: () =>
         apiClient<{ items: Category[] }>({
           url: API_ROUTES.categories.base,
@@ -49,11 +49,16 @@ export const categoryApi = {
       body: { ...category, slug },
     });
   },
-  updateOrders: (data: { id: string; oldIndex: number; newIndex: number }) => {
+  updateOrders: (data: {
+    id: string;
+    oldIndex: number;
+    newIndex: number;
+    parentId?: string;
+  }) => {
     return apiClient({
       url: API_ROUTES.categories.updateOrders,
       method: 'PUT',
-      body: { id: data.id, oldIndex: data.oldIndex, newIndex: data.newIndex },
+      body: { id: data.id, newOrder: data.newIndex + 1 },
     });
   },
   remove: (id: string) =>

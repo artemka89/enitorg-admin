@@ -1,13 +1,14 @@
-import { type FC, useMemo, useState } from 'react';
+import { type FC, useLayoutEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router';
 import {
   closestCenter,
   DndContext,
   type DragEndEvent,
+  type DragOverEvent,
+  type DragStartEvent,
   KeyboardSensor,
   MouseSensor,
   TouchSensor,
-  type UniqueIdentifier,
   useSensor,
   useSensors,
 } from '@dnd-kit/core';
@@ -49,14 +50,21 @@ export const CategoriesTable: FC = () => {
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
 
   const [expanded, setExpanded] = useState<ExpandedState>({});
+  const [isDropForbidden, setIsDropForbidden] = useState(false);
+
+  useLayoutEffect(() => {
+    if (isDropForbidden) {
+      document.body.classList.add('is-drop-forbidden');
+    } else {
+      document.body.classList.remove('is-drop-forbidden');
+    }
+    return () => {
+      document.body.classList.remove('is-drop-forbidden');
+    };
+  }, [isDropForbidden]);
 
   const { data: categories, isLoading } = useGetCategories();
   const { mutate: updateOrder } = useUpdateOrderCategories();
-
-  const dataIds = useMemo<UniqueIdentifier[]>(
-    () => categories?.items.map(({ id }) => id) || [],
-    [categories?.items],
-  );
 
   const table = useReactTable({
     data: categories?.items || [],
@@ -73,14 +81,84 @@ export const CategoriesTable: FC = () => {
     },
   });
 
-  function handleDragEnd(event: DragEndEvent) {
+  const flatRows = table.getRowModel().rows;
+
+  const rowIds = useMemo(
+    () => flatRows.map((row) => row.original.id),
+    [flatRows],
+  );
+
+  function handleDragStart(event: DragStartEvent) {
+    const { active } = event;
+    setIsDropForbidden(false);
+
+    if (active.data.current?.hasChildren) {
+      setExpanded({ [active.id]: false });
+    }
+  }
+
+  function handleDragOver(event: DragOverEvent) {
     const { active, over } = event;
 
-    if (active && over && active.id !== over.id) {
-      const oldIndex = dataIds.indexOf(active.id as string);
-      const newIndex = dataIds.indexOf(over.id as string);
+    if (!over || active.id === over.id) {
+      setIsDropForbidden(false);
+      return;
+    }
+
+    const activeData = active.data.current;
+    const overData = over.data.current;
+
+    const activeParentId = activeData?.parentId as string | undefined;
+    const overParentId = overData?.parentId as string | undefined;
+    const activeHasChildren = activeData?.hasChildren as boolean;
+
+    let isForbidden = false;
+
+    if (activeParentId !== overParentId) {
+      isForbidden = true;
+    }
+
+    if (activeHasChildren && overParentId) {
+      isForbidden = true;
+    }
+
+    setIsDropForbidden(isForbidden);
+  }
+
+  function handleDragEnd(event: DragEndEvent) {
+    setIsDropForbidden(false);
+    const { active, over } = event;
+
+    if (!over || active.id === over.id) return;
+
+    const activeParentId = active.data.current?.parentId as string | undefined;
+    const overParentId = over?.data.current?.parentId as string | undefined;
+    const activeHasChildren = active.data.current?.hasChildren as boolean;
+
+    if (activeHasChildren && overParentId) return;
+    if (activeParentId !== overParentId) return;
+
+    if (!activeParentId && !overParentId) {
+      const oldIndex = rowIds.indexOf(active.id as string);
+      const newIndex = rowIds.indexOf(over.id as string);
 
       updateOrder({ id: active.id.toString(), oldIndex, newIndex });
+      return;
+    }
+
+    const parent = categories?.items.find(
+      (c) => c.id === active.data.current?.parentId,
+    );
+    if (parent?.children) {
+      const oldIndex = parent.children.findIndex((c) => c.id === active.id);
+      const newIndex = parent.children.findIndex((c) => c.id === over.id);
+
+      updateOrder({
+        id: active.id.toString(),
+        oldIndex,
+        newIndex,
+        parentId: parent.id,
+      });
     }
   }
 
@@ -94,6 +172,8 @@ export const CategoriesTable: FC = () => {
     <DndContext
       collisionDetection={closestCenter}
       modifiers={[restrictToVerticalAxis]}
+      onDragStart={handleDragStart}
+      onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
       sensors={sensors}
     >
@@ -129,7 +209,7 @@ export const CategoriesTable: FC = () => {
           <TableBody>
             {table.getRowModel().rows?.length ? (
               <SortableContext
-                items={dataIds}
+                items={rowIds}
                 strategy={verticalListSortingStrategy}
               >
                 {table.getRowModel().rows.map((row) => (

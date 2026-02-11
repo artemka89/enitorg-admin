@@ -10,6 +10,10 @@ import type { Category } from '../../model/types';
 export const DraggableRow = ({ row }: { row: Row<Category> }) => {
   const { transform, transition, setNodeRef, isDragging } = useSortable({
     id: row.original.id,
+    data: {
+      parentId: row.original.parentId,
+      hasChildren: !!row.original.children?.length,
+    },
   });
 
   const style: CSSProperties = {

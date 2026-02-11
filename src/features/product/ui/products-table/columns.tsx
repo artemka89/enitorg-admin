@@ -48,7 +48,7 @@ export const columns: ColumnDef<Product>[] = [
           {row.original.categories.map((category) => (
             <li key={category.id}>
               <Link
-                to={href(ROUTES.categories.byId, { id: row.original.id })}
+                to={href(ROUTES.categories.byId, { id: category.id })}
                 className="font-semibold text-wrap hover:underline"
               >
                 {category.name}

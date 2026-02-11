@@ -14,14 +14,23 @@ export const columns: ColumnDef<Category>[] = [
   {
     id: 'drag-handle',
     cell: ({ row }) => {
-      if (row.depth === 0)
+      const subRowsLength = row.getParentRow()?.subRows.length || 0;
+
+      if (row.depth > 0 && subRowsLength < 2) return null;
+
+      if (row.depth > 0) {
         return (
-          <div className="w-4">
+          <div className="w-4 ml-auto">
             <RowDragHandleCell rowId={row.id} />
           </div>
         );
+      }
 
-      return;
+      return (
+        <div className="w-4">
+          <RowDragHandleCell rowId={row.id} />
+        </div>
+      );
     },
   },
   {

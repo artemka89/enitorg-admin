@@ -14,7 +14,7 @@ export function useRemoveCategory() {
     onSuccess: () => navigate(ROUTES.categories.base),
     onError: ({ message }) => toast.error(message),
     meta: {
-      invalidateQueries: [categoryKeys.all],
+      invalidateQueries: [categoryKeys.list()],
     },
   });
 }

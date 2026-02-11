@@ -13,7 +13,13 @@ export const RowDragHandleCell: FC<RowDragHandleCellProps> = ({ rowId }) => {
     id: rowId,
   });
   return (
-    <Button variant="ghost" {...attributes} {...listeners}>
+    <Button
+      variant="ghost"
+      size="icon"
+      {...attributes}
+      {...listeners}
+      className="cursor-grab active:cursor-grabbing"
+    >
       <GripVertical />
     </Button>
   );
