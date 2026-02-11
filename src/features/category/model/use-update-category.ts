@@ -8,7 +8,7 @@ export const useUpdateCategory = () => {
   return useMutation({
     mutationFn: (data: UpdateCategory) => categoryApi.update(data),
     meta: {
-      invalidateQueries: [categoryKeys.all],
+      invalidateQueries: [categoryKeys.list()],
       successMessage: 'Категория успешно обновлена',
       errorMessage: 'Ошибка обновления категории, попробуйте еще раз',
     },

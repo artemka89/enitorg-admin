@@ -10,7 +10,7 @@ import type { Category, CreateCategory, UpdateCategory } from './types';
 export const categoryApi = {
   getAll: (onlyParents?: boolean) => {
     return queryOptions({
-      queryKey: [...categoryKeys.all, onlyParents],
+      queryKey: [...categoryKeys.list(onlyParents)],
       queryFn: () =>
         apiClient<{ items: Category[] }>({
           url: API_ROUTES.categories.base,
