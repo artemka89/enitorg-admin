@@ -1,8 +1,6 @@
-import { useState } from 'react';
-import { Link, Plus } from 'lucide-react';
+import { Plus } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
-import { Input } from '@/shared/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
 import { useUploadProductImage } from '../model/use-upload-product-image';
@@ -25,8 +23,6 @@ export function ImageUploadField({
   onImagesChange,
   disabled,
 }: ImageUploadFieldProps) {
-  const [newImageUrl, setNewImageUrl] = useState('');
-
   const { mutate, isPending } = useUploadProductImage();
 
   const handleAddImageUrl = (url: string) => {
@@ -44,7 +40,6 @@ export function ImageUploadField({
     const imageUrl = url.trim();
     if (url && !imageUrls.includes(imageUrl)) {
       onImagesChange([...imageUrls, imageUrl]);
-      setNewImageUrl('');
     }
   };
 
@@ -78,8 +73,8 @@ export function ImageUploadField({
           </Tooltip>
         }
       />
-
-      <div className="flex gap-2">
+      {/* TODO: нет понятной логики */}
+      {/* <div className="flex gap-2">
         <div className="bg-primary text-background flex items-center gap-2 rounded-md px-4">
           <Link className="h-4 w-4" />
           URL
@@ -87,7 +82,7 @@ export function ImageUploadField({
 
         <div className="flex flex-1 gap-2">
           <Input
-            placeholder="https://example.com/image.jpg"
+            placeholder="/storage/images/products/имя-файла.webp"
             value={newImageUrl}
             onChange={(e) => setNewImageUrl(e.target.value)}
             onKeyDown={(e) =>
@@ -103,7 +98,7 @@ export function ImageUploadField({
             <Plus className="h-4 w-4" />
           </Button>
         </div>
-      </div>
+      </div> */}
     </div>
   );
 }
