@@ -1,10 +1,11 @@
-import { type FC } from 'react';
+import { type FC, useEffect, useRef } from 'react';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { CategoriesModal } from '@/features/category/ui/toggle-category/categories-modal';
+import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
 import { cn } from '@/shared/lib/cn';
 import { ROUTES } from '@/shared/routes';
 import { Button } from '@/shared/ui/button';
@@ -28,6 +29,20 @@ import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ImageUploadField } from './image-upload-field';
 import { SpecificationFields } from './specification-fields';
 
+const LOCAL_STORAGE_KEY = 'add-products-form';
+
+const defaultProductValue = {
+  name: '',
+  code: '',
+  price: 0,
+  weight: 0,
+  packageQuantity: 1,
+  description: '',
+  specifications: [],
+  imageUrls: [],
+  categoryIds: [],
+};
+
 interface AddProductsFormProps {
   className?: string;
 }
@@ -39,19 +54,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
 
   const form = useForm<AddProductsSchema>({
     defaultValues: {
-      products: [
-        {
-          name: '',
-          code: '',
-          price: 0,
-          weight: 0,
-          packageQuantity: 1,
-          description: '',
-          specifications: [],
-          imageUrls: [],
-          categoryIds: [],
-        },
-      ],
+      products: [defaultProductValue],
     },
     resolver: zodResolver(AddProductsSchema),
   });
@@ -64,29 +67,52 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
   const onSubmit = async (data: AddProductsSchema) => {
     mutate(data.products, {
       onSuccess: () => {
-        form.reset();
+        canSaveToLocalStorage.current = false;
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
         navigate(ROUTES.products.base);
       },
     });
   };
 
   const addProduct = () => {
-    append({
-      name: '',
-      code: '',
-      price: 0,
-      weight: 0,
-      packageQuantity: 1,
-      description: '',
-      specifications: [],
-      imageUrls: [],
-      categoryIds: [],
-    });
+    append(defaultProductValue);
   };
+
+  const canSaveToLocalStorage = useRef(true);
+
+  const debouncedSave = useDebouncedCallback((value) => {
+    if (canSaveToLocalStorage.current) {
+      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(value));
+    }
+  }, 500);
 
   const getImageName = (index: number) => {
     return `${form.watch(`products.${index}.code`)}-${form.watch(`products.${index}.imageUrls`).length + 1}`;
   };
+
+  useEffect(() => {
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedData) {
+      try {
+        const parsedData = JSON.parse(savedData);
+        if (parsedData) {
+          form.reset(parsedData);
+        }
+      } catch (error) {
+        console.error(
+          'Failed to parse products from localStorage on mount',
+          error,
+        );
+      }
+    }
+  }, [form]);
+
+  useEffect(() => {
+    const subscription = form.watch((value) => {
+      debouncedSave(value);
+    });
+    return () => subscription.unsubscribe();
+  }, [form, debouncedSave]);
 
   return (
     <Form {...form}>
@@ -107,6 +133,20 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
                   className="text-destructive hover:text-destructive"
                 >
                   <Trash2 className="h-4 w-4" />
+                </Button>
+              )}
+              {fields.length === 1 && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="sm"
+                  onClick={() => {
+                    localStorage.removeItem(LOCAL_STORAGE_KEY);
+                    form.reset({ products: [defaultProductValue] });
+                  }}
+                  className="text-destructive hover:text-destructive"
+                >
+                  Очистить
                 </Button>
               )}
             </CardHeader>
