@@ -64,7 +64,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
     name: 'products',
   });
 
-  const onSubmit = async (data: AddProductsSchema) => {
+  const handleOnSubmit = async (data: AddProductsSchema) => {
     mutate(data.products, {
       onSuccess: () => {
         canSaveToLocalStorage.current = false;
@@ -74,8 +74,19 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
     });
   };
 
-  const addProduct = () => {
+  const handleAddProduct = () => {
     append(defaultProductValue);
+  };
+
+  const handleAddProductCopy = () => {
+    const lastProduct = form.getValues('products').at(-1);
+    if (!lastProduct) return;
+
+    append({
+      ...lastProduct,
+      code: '',
+      imageUrls: [],
+    });
   };
 
   const canSaveToLocalStorage = useRef(true);
@@ -117,7 +128,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(handleOnSubmit)}
         className={cn(className, 'space-y-6')}
       >
         {fields.map((field, index) => (
@@ -132,7 +143,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
                   onClick={() => remove(index)}
                   className="text-destructive hover:text-destructive"
                 >
-                  <Trash2 className="h-4 w-4" />
+                  Удалить <Trash2 className="h-4 w-4" />
                 </Button>
               )}
               {fields.length === 1 && (
@@ -340,18 +351,26 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
           </Card>
         ))}
 
-        <div className="flex flex-col justify-between gap-4 sm:flex-row">
+        <div className="flex gap-4">
           <Button
             type="button"
             variant="outline"
-            onClick={addProduct}
+            onClick={handleAddProduct}
             className="flex items-center gap-2 bg-transparent"
           >
             <Plus className="h-4 w-4" />
             Добавить еще товар
           </Button>
-
-          <Button type="submit" disabled={isPending}>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleAddProductCopy}
+            className="flex items-center gap-2 bg-transparent"
+          >
+            <Plus className="h-4 w-4" />
+            Добавить копию товара
+          </Button>
+          <Button type="submit" disabled={isPending} className="ml-auto">
             Сохранить товары ({fields.length})
           </Button>
         </div>
