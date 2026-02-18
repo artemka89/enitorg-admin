@@ -27,6 +27,7 @@ import { useAddProducts } from '../model/use-add-products';
 
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ImageUploadField } from './image-upload-field';
+import { ProductCodeInput } from './product-code-field';
 import { SpecificationFields } from './specification-fields';
 
 const LOCAL_STORAGE_KEY = 'add-products-form';
@@ -189,7 +190,10 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
                       <FormItem>
                         <FormLabel>Код товара *:</FormLabel>
                         <FormControl>
-                          <Input {...field} placeholder="Введите код товара" />
+                          <ProductCodeInput
+                            {...field}
+                            placeholder="Введите код товара"
+                          />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
@@ -365,6 +369,7 @@ export const AddProductsForm: FC<AddProductsFormProps> = ({ className }) => {
             type="button"
             variant="outline"
             onClick={handleAddProductCopy}
+            disabled={!form.getValues('products').at(-1)}
             className="flex items-center gap-2 bg-transparent"
           >
             <Plus className="h-4 w-4" />
