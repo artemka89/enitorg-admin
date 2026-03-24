@@ -1,4 +1,5 @@
 import { useMutation } from '@tanstack/react-query';
+import { toast } from 'sonner';
 
 import { productApi } from './api';
 import { productKeys } from './query-keys';
@@ -10,7 +11,9 @@ export const useAddProducts = () => {
     meta: {
       invalidateQueries: [productKeys.all],
       successMessage: 'Товары успешно созданы',
-      errorMessage: 'Ошибка создания товаров, попробуйте еще раз',
+    },
+    onError: (error) => {
+      toast.error(error.message);
     },
   });
 };

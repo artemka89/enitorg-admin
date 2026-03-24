@@ -2,8 +2,8 @@ import { useMutation } from '@tanstack/react-query';
 
 import { productApi } from './api';
 
-export const useCheckProductCode = () => {
+export function useGenerateProductCode() {
   return useMutation({
-    mutationFn: (code: string) => productApi.checkCode(code),
+    mutationFn: () => productApi.generateCode(),
   });
-};
+}

@@ -33,7 +33,7 @@ export async function apiClient<TData>({
 
   if (!response.ok) {
     const error: ErrorType = await response.json();
-    throw new Error(error.message);
+    throw error;
   }
 
   const responseData = await response.json();

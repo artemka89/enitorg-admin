@@ -66,9 +66,14 @@ export const productApi = {
       body: formData,
     });
   },
-  checkProductCode: (code: string) => {
+  checkCode: (code: string) => {
     return apiClient<{ exist: boolean }>({
       url: API_ROUTES.products.checkCode(code),
+    });
+  },
+  generateCode: () => {
+    return apiClient<{ code: string }>({
+      url: API_ROUTES.products.generateCode,
     });
   },
 };
