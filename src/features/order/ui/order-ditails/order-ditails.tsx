@@ -1,22 +1,36 @@
 import { type FC } from 'react';
-import { useParams } from 'react-router';
+import { useNavigate, useParams } from 'react-router';
 
 import { formatDate } from '@/shared/lib/format-date';
 import { formatPrice } from '@/shared/lib/format-price';
+import { ROUTES } from '@/shared/routes';
 import { Typography } from '@/shared/ui/typography';
 
+import { useDeleteOrder } from '../../model/use-delete-order';
 import { useGetOrder } from '../../model/use-get-order';
 import { StatusSelector } from '../status-selector';
 
 import { OrderDescriptionText } from './order-description-text';
 import { OrderItem } from './order-item';
+import { RemoveOrderModal } from './remove-order-modal';
 
 export const OrderDitails: FC = () => {
   const params = useParams<{ id: string }>();
+  const navigate = useNavigate();
 
   const { data } = useGetOrder(params.id);
 
+  const { mutate: deleteOrder, isPending: isDeleting } = useDeleteOrder();
+
   if (!data) return null;
+
+  const handleDelete = () => {
+    deleteOrder(data.id, {
+      onSuccess: () => {
+        navigate(ROUTES.orders.base);
+      },
+    });
+  };
 
   return (
     <>
@@ -29,8 +43,15 @@ export const OrderDitails: FC = () => {
           currentStatus={data.status}
           className="min-w-36"
         />
+        <RemoveOrderModal
+          onRemove={handleDelete}
+          isLoading={isDeleting}
+          orderNumber={data.number}
+          className="ml-auto"
+        />
       </div>
-      <div className="mb-4 max-w-[570px]">
+
+      <div className="mb-4 w-full max-w-[570px]">
         <OrderDescriptionText
           title="Дата заказа"
           text={formatDate(data.createdAt, true)}

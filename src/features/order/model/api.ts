@@ -33,4 +33,11 @@ export const orderApi = {
       method: 'PUT',
       body: data,
     }),
+
+  delete: (id: string) => {
+    return apiClient({
+      url: API_ROUTES.orders.byId(id),
+      method: 'DELETE',
+    });
+  },
 };
