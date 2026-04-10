@@ -17,7 +17,6 @@ import {
 } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
-import { SortableImagePreviews } from '@/shared/ui/sortable-image-previews';
 import { Spinner } from '@/shared/ui/spinner';
 import { Typography } from '@/shared/ui/typography';
 
@@ -26,7 +25,7 @@ import { useEditProduct } from '../model/use-edit-product';
 import { useGetProduct } from '../model/use-get-product';
 
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
-import { ImageUploadField } from './image-upload-field';
+import { VariantFields } from './product-variant-fields';
 import { SpecificationFields } from './specification-fields';
 
 interface EditProductFormProps {
@@ -46,20 +45,18 @@ export const EditProductForm: FC<EditProductFormProps> = ({
   const form = useForm<ProductFormSchema>({
     values: {
       name: product?.name || '',
-      code: product?.code || '',
-      price: product?.price || 0,
-      weight: product?.weight || 0,
-      packageQuantity: product?.packageQuantity || 0,
+      status: product?.status || 'IN_SALE',
       description: product?.description || '',
       specifications: product?.specifications || [],
-      imageUrls: product?.imageUrls || [],
       categoryIds: product?.categories.map((category) => category.id) || [],
+      variants: product?.variants || [],
     },
     resolver: zodResolver(ProductFormSchema),
   });
 
   const onSubmit = async (data: ProductFormSchema) => {
     if (!id) return;
+
     update(
       { id, ...data },
       {
@@ -69,10 +66,6 @@ export const EditProductForm: FC<EditProductFormProps> = ({
         },
       },
     );
-  };
-
-  const getImageName = () => {
-    return `${form.watch('code')}-${form.watch('imageUrls').length + 1}`;
   };
 
   return (
@@ -89,112 +82,20 @@ export const EditProductForm: FC<EditProductFormProps> = ({
         <Typography tag="h1" size="3xl" weight="bold">
           {product?.name}
         </Typography>
-        <div className="grid grid-cols-2 gap-4">
-          <div>
-            <FormField
-              control={form.control}
-              name="name"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Имя *:</FormLabel>
-                  <FormControl>
-                    <Input {...field} placeholder="Введите название товара" />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
-              name="code"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Код товара *:</FormLabel>
-                  <FormControl>
-                    <Input
-                      disabled
-                      {...field}
-                      placeholder="Введите код товара"
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        </div>
-        <div className="grid grid-cols-1 gap-4 md:grid-cols-3">
-          <div>
-            <FormField
-              control={form.control}
-              name="price"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Цена *:</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      step="0.01"
-                      placeholder="0.00"
-                      onChange={(e) =>
-                        field.onChange(Number.parseFloat(e.target.value) || 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
-              name="weight"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Вес, гр. *:</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      step="0.001"
-                      placeholder="0.000"
-                      onChange={(e) =>
-                        field.onChange(Number.parseFloat(e.target.value) || 0)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-          <div>
-            <FormField
-              control={form.control}
-              name="packageQuantity"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Количество в упаковке *:</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      type="number"
-                      min="1"
-                      placeholder="1"
-                      onChange={(e) =>
-                        field.onChange(Number.parseInt(e.target.value) || 1)
-                      }
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
+        <div>
+          <FormField
+            control={form.control}
+            name="name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Название *:</FormLabel>
+                <FormControl>
+                  <Input {...field} placeholder="Введите название товара" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
         </div>
         <FormField
           control={form.control}
@@ -212,29 +113,12 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             </FormItem>
           )}
         />
-        <FormField
+        <VariantFields
+          // TODO: fix types
+          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+          // @ts-ignore
           control={form.control}
-          name="imageUrls"
-          render={({ field }) => (
-            <FormItem>
-              <FormLabel>Изображения *:</FormLabel>
-              <FormControl>
-                <div>
-                  <ImageUploadField
-                    imageUrls={field.value}
-                    onImagesChange={field.onChange}
-                    fileName={getImageName()}
-                  />
-                  <SortableImagePreviews
-                    imageUrls={field.value}
-                    onImagesChange={field.onChange}
-                    className="mt-2"
-                  />
-                </div>
-              </FormControl>
-              <FormMessage />
-            </FormItem>
-          )}
+          name="variants"
         />
         <FormField
           control={form.control}
@@ -253,15 +137,9 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             </FormItem>
           )}
         />
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label>Характеристики</Label>
-          <SpecificationFields
-            // TODO: fix types
-            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-ignore
-            control={form.control}
-            name="specifications"
-          />
+          <SpecificationFields control={form.control} name="specifications" />
         </div>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={() => form.reset()}>

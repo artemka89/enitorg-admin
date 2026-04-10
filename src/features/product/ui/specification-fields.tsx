@@ -1,4 +1,11 @@
-import { type Control, useFieldArray } from 'react-hook-form';
+import {
+  type Control,
+  type FieldArray,
+  type FieldArrayPath,
+  type FieldValues,
+  type Path,
+  useFieldArray,
+} from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
@@ -11,37 +18,32 @@ import {
 } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 
-import {
-  type AddProductsSchema,
-  type ProductFormSchema,
-} from '../model/product-form-schema';
-
-interface SpecificationFieldsProps {
-  control: Control<AddProductsSchema | ProductFormSchema>;
-  name: 'specifications' | `products.${number}.specifications`;
+interface SpecificationFieldsProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldArrayPath<TFieldValues>;
 }
 
-export function SpecificationFields({
+export function SpecificationFields<TFieldValues extends FieldValues>({
   control,
   name,
-}: SpecificationFieldsProps) {
+}: SpecificationFieldsProps<TFieldValues>) {
   const { fields, append, remove } = useFieldArray({
     control,
     name,
   });
 
   const addSpecification = () => {
-    append({ name: '', value: '' });
+    append({ name: '', value: '' } as FieldArray<TFieldValues, typeof name>);
   };
 
   return (
     <div className="space-y-3">
       {fields.map((field, specIndex) => (
-        <div key={field.id} className="mt-4 flex gap-2">
+        <div key={field.id} className=" flex gap-2">
           <div className="flex-1">
             <FormField
               control={control}
-              name={`${name}.${specIndex}.name`}
+              name={`${name}.${specIndex}.name` as Path<TFieldValues>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Название *:</FormLabel>
@@ -56,7 +58,7 @@ export function SpecificationFields({
           <div className="flex-1">
             <FormField
               control={control}
-              name={`${name}.${specIndex}.value`}
+              name={`${name}.${specIndex}.value` as Path<TFieldValues>}
               render={({ field }) => (
                 <FormItem>
                   <FormLabel>Значение *:</FormLabel>
@@ -82,13 +84,7 @@ export function SpecificationFields({
         </div>
       ))}
 
-      <Button
-        type="button"
-        variant="outline"
-        size="sm"
-        onClick={addSpecification}
-        className="flex items-center gap-2 bg-transparent"
-      >
+      <Button type="button" size="sm" onClick={addSpecification}>
         <Plus className="h-4 w-4" />
         Добавить характеристику
       </Button>

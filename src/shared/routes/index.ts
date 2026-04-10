@@ -23,6 +23,10 @@ export const API_ROUTES = {
     byId: (id: string) => `/admin/orders/${id}`,
     updateStatus: (id: string) => `/admin/orders/${id}/status`,
   },
+  measurements: {
+    base: '/admin/measurements',
+    byId: (id: string) => `/admin/measurements/${id}`,
+  },
 } as const;
 
 export const ROUTES = {

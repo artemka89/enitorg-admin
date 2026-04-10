@@ -62,12 +62,17 @@ export const SortableImagePreviews: FC<SortableImagePreviewsProps> = ({
     >
       <SortableContext items={imageUrls} strategy={rectSortingStrategy}>
         <div className={cn(className, 'flex items-center flex-wrap gap-2')}>
-          {imageUrls.map((url) => (
+          {imageUrls.map((url, index) => (
             <SortableImageCard
               key={url}
               url={url}
               onRemove={handleRemoveImage}
-              className="max-w-44 w-full"
+              className={cn(
+                'max-w-44 w-full border-4 overflow-hidden relative',
+                {
+                  'border-green-500': index === 0,
+                },
+              )}
             />
           ))}
         </div>
