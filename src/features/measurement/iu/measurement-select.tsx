@@ -2,7 +2,13 @@ import * as React from 'react';
 import { useFormContext } from 'react-hook-form';
 import { useQuery } from '@tanstack/react-query';
 
-import { FormItem, FormLabel } from '@/shared/ui/form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/ui/form';
 import {
   Select,
   SelectContent,
@@ -22,7 +28,7 @@ export const MeasurementSelect: React.FC<MeasurementSelectProps> = ({
   basePath,
   disabled,
 }) => {
-  const { watch, setValue } = useFormContext();
+  const { watch, setValue, control } = useFormContext();
   const { data: measurements, isLoading } = useQuery(measurementApi.getAll());
 
   const measurementId = watch(`${basePath}.measurementNameId`);
@@ -40,71 +46,87 @@ export const MeasurementSelect: React.FC<MeasurementSelectProps> = ({
     setValue(`${basePath}.measurementNameId`, newMeasurementId, {
       shouldValidate: true,
     });
-    setValue(`${basePath}.measurementName`, measurement?.name || '', {
+    setValue(`${basePath}.measurementName`, measurement?.name || '');
+    setValue(`${basePath}.measurementUnitId`, null);
+    setValue(`${basePath}.measurementUnit`, '');
+    setValue(`${basePath}.hasUnits`, (measurement?.units?.length || 0) > 0, {
       shouldValidate: true,
     });
-
-    setValue(`${basePath}.measurementUnitId`, '', { shouldValidate: true });
-    setValue(`${basePath}.measurementUnit`, '', { shouldValidate: true });
   };
 
-  const handleUnitChange = (newUnitId: string) => {
+  const handleUnitChange = (newUnitId: string | undefined) => {
     const unit = selectedMeasurement?.units.find((u) => u.id === newUnitId);
 
-    setValue(`${basePath}.measurementUnitId`, newUnitId, {
-      shouldValidate: true,
-    });
-    setValue(`${basePath}.measurementUnit`, unit?.name || '', {
-      shouldValidate: true,
-    });
+    setValue(`${basePath}.measurementUnitId`, newUnitId || '');
+    setValue(`${basePath}.measurementUnit`, unit?.name || '');
   };
 
   return (
     <>
       <div className="flex-1">
-        <FormItem>
-          <FormLabel>Название изм.</FormLabel>
-          <Select
-            value={measurementId || undefined}
-            onValueChange={handleMeasurementChange}
-            disabled={isLoading || disabled}
-          >
-            <SelectTrigger className="w-full min-w-[150px]">
-              <SelectValue placeholder="Измерение" />
-            </SelectTrigger>
-            <SelectContent>
-              {measurements?.items.map((measurement) => (
-                <SelectItem key={measurement.id} value={measurement.id}>
-                  {measurement.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={control}
+          name={`${basePath}.measurementNameId`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Название изм. *:</FormLabel>
+              <FormControl>
+                <Select
+                  {...field}
+                  value={measurementId || undefined}
+                  onValueChange={handleMeasurementChange}
+                  disabled={isLoading || disabled}
+                >
+                  <SelectTrigger className="w-full min-w-[150px]">
+                    <SelectValue placeholder="Измерение" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {measurements?.items.map((measurement) => (
+                      <SelectItem key={measurement.id} value={measurement.id}>
+                        {measurement.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
 
       <div className="flex-1">
-        <FormItem>
-          <FormLabel>Единица изм.</FormLabel>
-          <Select
-            value={unitId || undefined}
-            onValueChange={handleUnitChange}
-            disabled={
-              !selectedMeasurement?.units.length || isLoading || disabled
-            }
-          >
-            <SelectTrigger className="w-full min-w-[150px]">
-              <SelectValue placeholder="Единица" />
-            </SelectTrigger>
-            <SelectContent>
-              {selectedMeasurement?.units.map((unit) => (
-                <SelectItem key={unit.id} value={unit.id}>
-                  {unit.name}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </FormItem>
+        <FormField
+          control={control}
+          name={`${basePath}.measurementUnitId`}
+          render={({ field }) => (
+            <FormItem>
+              <FormLabel>Единица изм. :</FormLabel>
+              <FormControl>
+                <Select
+                  {...field}
+                  value={unitId || undefined}
+                  onValueChange={handleUnitChange}
+                  disabled={
+                    !selectedMeasurement?.units.length || isLoading || disabled
+                  }
+                >
+                  <SelectTrigger className="w-full min-w-[150px]">
+                    <SelectValue placeholder="Единица" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {selectedMeasurement?.units.map((unit) => (
+                      <SelectItem key={unit.id} value={unit.id}>
+                        {unit.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </FormControl>
+              <FormMessage />
+            </FormItem>
+          )}
+        />
       </div>
     </>
   );

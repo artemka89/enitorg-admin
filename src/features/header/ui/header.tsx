@@ -13,7 +13,7 @@ export const Header: FC<HeaderProps> = ({ className }) => {
     <header
       className={cn(
         className,
-        'h-16 dark:bg-sidebar bg-primary flex items-center ',
+        'h-16 dark:bg-sidebar bg-primary flex items-center',
       )}
     >
       <div className="flex items-center justify-between w-full gap-4 px-4">

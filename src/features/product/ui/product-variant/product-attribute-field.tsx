@@ -4,11 +4,17 @@ import { Plus, Trash2 } from 'lucide-react';
 
 import { MeasurementSelect } from '@/features/measurement';
 import { Button } from '@/shared/ui/button';
-import { FormControl, FormField, FormItem, FormLabel } from '@/shared/ui/form';
+import {
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
 import { Typography } from '@/shared/ui/typography';
 
-import { type ProductFormSchema } from '../model/product-form-schema';
+import { type ProductFormSchema } from '../../model/product-form-schema';
 
 export const VariantAttributesFields: FC<{
   variantIndex: number;
@@ -37,10 +43,11 @@ export const VariantAttributesFields: FC<{
                 name={`variants.${variantIndex}.attributes.${index}.value`}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Значение</FormLabel>
+                    <FormLabel>Значение *</FormLabel>
                     <FormControl>
                       <Input {...field} placeholder="Введите значение" />
                     </FormControl>
+                    <FormMessage />
                   </FormItem>
                 )}
               />
@@ -49,8 +56,7 @@ export const VariantAttributesFields: FC<{
             <MeasurementSelect
               basePath={`variants.${variantIndex}.attributes.${index}`}
             />
-
-            <div className="flex self-end gap-2">
+            <div className="flex pt-[22px] gap-2">
               <Button
                 type="button"
                 variant="outline"

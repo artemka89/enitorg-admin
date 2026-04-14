@@ -16,18 +16,29 @@ const ProductSpecificationSchema = z.object({
     .min(1, { error: 'Значение характеристики не может быть пустым' }),
 });
 
-const ProductAttributeSchema = z.object({
-  value: z.string().min(1, { error: 'Значение не может быть пустым' }),
-  measurementNameId: z.string({ error: 'Выберите едини измерения' }),
-  measurementUnitId: z.string({ error: 'Выберите едини измерения' }).optional(),
-  measurementUnit: z.string().optional(),
-});
+const ProductAttributeSchema = z
+  .object({
+    value: z.string().min(1, { error: 'Значение не может быть пустым' }),
+    measurementNameId: z.string({ error: 'Выберите название измерения' }),
+    measurementUnitId: z.string().nullable(),
+    measurementUnit: z.string().optional(),
+    hasUnits: z.boolean().optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.hasUnits && !data.measurementUnitId) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['measurementUnitId'],
+        message: 'Выберите единицу измерения',
+      });
+    }
+  });
 
 const ProductVariantSchema = z.object({
   id: z.string().optional(),
-  code: z.string({ error: 'Введите код варианта' }),
+  code: z.string().min(5, { error: 'Введите код варианта' }),
   status: ProductStatusSchema,
-  price: z.number().positive({ error: 'Цена должна быть больше 0' }),
+  price: z.number().min(1, { error: 'Цена должна быть больше 0' }),
   imageUrls: ProductImageUrlsSchema,
   minSaleQuantity: z
     .number()

@@ -1,7 +1,8 @@
 import { type FC } from 'react';
-import { useForm } from 'react-hook-form';
+import { type FieldErrors, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { toast } from 'sonner';
 
 import { CategoriesModal } from '@/features/category/ui/toggle-category/categories-modal';
 import { cn } from '@/shared/lib/cn';
@@ -16,7 +17,6 @@ import {
   FormMessage,
 } from '@/shared/ui/form';
 import { Input } from '@/shared/ui/input';
-import { Label } from '@/shared/ui/label';
 import { Spinner } from '@/shared/ui/spinner';
 import { Typography } from '@/shared/ui/typography';
 
@@ -24,8 +24,9 @@ import { ProductFormSchema } from '../model/product-form-schema';
 import { useEditProduct } from '../model/use-edit-product';
 import { useGetProduct } from '../model/use-get-product';
 
+import { VariantFields } from './product-variant/product-variant-fields';
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
-import { VariantFields } from './product-variant-fields';
+import { ProductStatusSelect } from './product-status-select';
 import { SpecificationFields } from './specification-fields';
 
 interface EditProductFormProps {
@@ -55,10 +56,10 @@ export const EditProductForm: FC<EditProductFormProps> = ({
   });
 
   const onSubmit = async (data: ProductFormSchema) => {
-    if (!id) return;
+    if (!product || !product?.id) return;
 
     update(
-      { id, ...data },
+      { id: product.id, ...data },
       {
         onSuccess: () => {
           form.reset();
@@ -68,10 +69,23 @@ export const EditProductForm: FC<EditProductFormProps> = ({
     );
   };
 
+  const onError = (errors: FieldErrors<ProductFormSchema>) => {
+    if (Array.isArray(errors.variants)) {
+      const errorIndex = errors.variants.findIndex((err) => err);
+      if (errorIndex !== -1) {
+        toast.error(
+          `Проверьте правильность заполнения полей в варианте №${
+            errorIndex + 1
+          }`,
+        );
+      }
+    }
+  };
+
   return (
     <Form {...form}>
       <form
-        onSubmit={form.handleSubmit(onSubmit)}
+        onSubmit={form.handleSubmit(onSubmit, onError)}
         className={cn(className, 'space-y-6 relative')}
       >
         {isLoadingProduct && (
@@ -79,30 +93,49 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             <Spinner />
           </div>
         )}
-        <Typography tag="h1" size="3xl" weight="bold">
-          {product?.name}
-        </Typography>
-        <div>
-          <FormField
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Название *:</FormLabel>
-                <FormControl>
-                  <Input {...field} placeholder="Введите название товара" />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+        <div className="flex gap-4">
+          <div className="flex-1">
+            <FormField
+              control={form.control}
+              name="name"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Название *</FormLabel>
+                  <FormControl>
+                    <Input {...field} placeholder="Введите название товара" />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
+          <div>
+            <FormField
+              control={form.control}
+              name="status"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Статус</FormLabel>
+                  <FormControl>
+                    <ProductStatusSelect
+                      onChange={field.onChange}
+                      value={field.value}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+          </div>
         </div>
         <FormField
           control={form.control}
           name="categoryIds"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Категории *:</FormLabel>
+              <FormLabel className="text-2xl font-medium">
+                Категории *
+              </FormLabel>
               <FormControl>
                 <CategoriesModal
                   selectedCategories={field.value}
@@ -113,19 +146,13 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             </FormItem>
           )}
         />
-        <VariantFields
-          // TODO: fix types
-          // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-          // @ts-ignore
-          control={form.control}
-          name="variants"
-        />
+        <VariantFields />
         <FormField
           control={form.control}
           name="description"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Описание:</FormLabel>
+              <FormLabel className="text-2xl font-medium">Описание</FormLabel>
               <FormControl>
                 <RichTextEditor
                   value={field.value}
@@ -138,14 +165,19 @@ export const EditProductForm: FC<EditProductFormProps> = ({
           )}
         />
         <div className="flex flex-col gap-2">
-          <Label>Характеристики</Label>
+          <Typography size="2xl" weight="medium">
+            Характеристики
+          </Typography>
           <SpecificationFields control={form.control} name="specifications" />
         </div>
         <div className="flex justify-end gap-2">
           <Button type="button" variant="outline" onClick={() => form.reset()}>
             Сбросить
           </Button>
-          <Button type="submit" disabled={false}>
+          <Button
+            type="submit"
+            disabled={isLoadingProduct || !form.formState.isDirty}
+          >
             Сохранить
           </Button>
         </div>

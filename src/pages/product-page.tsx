@@ -14,10 +14,10 @@ export const ProductPage: FC = () => {
     <div className="container mx-auto">
       <BackButton className="mb-4" />
       <div className="mb-4">
-        <Typography size="3xl" weight="semibold">
+        <Typography size="2xl" weight="semibold">
           Редактирование товара
         </Typography>
-        <Typography className="text-muted-foreground mt-2">
+        <Typography className="text-muted-foreground">
           Редактируйте товар в системе
         </Typography>
       </div>

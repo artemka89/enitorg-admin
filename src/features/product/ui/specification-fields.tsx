@@ -65,21 +65,23 @@ export function SpecificationFields<TFieldValues extends FieldValues>({
                   <FormControl>
                     <div className="flex items-center gap-2">
                       <Input {...field} placeholder="Значение" />
-                      <Button
-                        type="button"
-                        variant="outline"
-                        size="sm"
-                        onClick={() => remove(specIndex)}
-                        className="text-destructive hover:text-destructive mt-0 h-9 self-center"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
                     </div>
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
+          </div>
+          <div className="pt-[22px]">
+            <Button
+              type="button"
+              variant="outline"
+              size="icon"
+              onClick={() => remove(specIndex)}
+              className="text-destructive hover:text-destructive mt-0 h-9 self-center "
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
       ))}

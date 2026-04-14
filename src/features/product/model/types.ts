@@ -30,7 +30,7 @@ export interface ProductAttribute {
   value: string;
   measurementNameId: string;
   measurementName: string;
-  measurementUnitId?: string;
+  measurementUnitId: string | null;
   measurementUnit?: string;
 }
 
@@ -67,6 +67,7 @@ export interface AddProduct {
 export interface UpdateProduct {
   id: string;
   name: string;
+  status: ProductStatus;
   description: string | null;
   specifications: ProductSpecification[];
   categoryIds: string[];
@@ -83,7 +84,7 @@ export interface UpdateProductVariant {
   attributes: {
     value: string;
     measurementNameId: string;
-    measurementUnitId?: string;
+    measurementUnitId: string | null;
   }[];
 }
 
