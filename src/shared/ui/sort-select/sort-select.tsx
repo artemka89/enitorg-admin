@@ -9,6 +9,8 @@ import {
   SelectValue,
 } from '@/shared/ui/select';
 
+import { Label } from '../label';
+
 import { SORT_OPTIONS } from './constants';
 import type { CurrentSortValue, SortParam } from './types';
 
@@ -38,8 +40,8 @@ export const SortSelect: FC<SortSelectProps> = ({
   );
 
   return (
-    <div className={cn(className, 'flex items-center gap-x-2')}>
-      <p>Сортировать:</p>
+    <div className={cn(className)}>
+      <Label className="mb-2">Сортировать:</Label>
       <Select value={value} onValueChange={handleSortChange}>
         <SelectTrigger className="min-w-[180px] cursor-pointer">
           <SelectValue />

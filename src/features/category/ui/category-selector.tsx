@@ -1,6 +1,7 @@
 import { type FC } from 'react';
 
 import { cn } from '@/shared/lib/cn';
+import { Label } from '@/shared/ui/label';
 import {
   Select,
   SelectContent,
@@ -29,8 +30,8 @@ export const CategorySelector: FC<CategorySelectorProps> = ({
   };
 
   return (
-    <div className={cn(className, 'flex items-center gap-x-2')}>
-      <p>Категории:</p>
+    <div className={cn(className)}>
+      <Label className="mb-2">Категории:</Label>
       <Select value={value} onValueChange={handleCategoryChange}>
         <SelectTrigger className="min-w-[180px] cursor-pointer">
           <SelectValue />

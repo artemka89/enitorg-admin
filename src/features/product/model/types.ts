@@ -101,4 +101,5 @@ export interface ProductsParams {
   order?: 'asc' | 'desc';
   query?: string;
   limit?: number;
+  status?: ProductStatus;
 }

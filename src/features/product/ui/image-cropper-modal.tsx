@@ -1,4 +1,3 @@
-import type React from 'react';
 import { type FC, useCallback, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import { Plus, RotateCw, Upload } from 'lucide-react';

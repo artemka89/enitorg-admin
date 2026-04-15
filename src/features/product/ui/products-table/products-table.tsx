@@ -8,7 +8,7 @@ import {
   type VisibilityState,
 } from '@tanstack/react-table';
 import { ChevronDown, Plus } from 'lucide-react';
-import { useQueryState } from 'nuqs';
+import { parseAsStringEnum, useQueryState } from 'nuqs';
 
 import { CategorySelector } from '@/features/category';
 import { cn } from '@/shared/lib/cn';
@@ -20,8 +20,17 @@ import {
   DropdownMenuContent,
   DropdownMenuTrigger,
 } from '@/shared/ui/dropdown-menu';
+import { Label } from '@/shared/ui/label';
 import { SearchField } from '@/shared/ui/search-field';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/shared/ui/select';
 import { SortSelect } from '@/shared/ui/sort-select/sort-select';
+import type { CurrentSortValue } from '@/shared/ui/sort-select/types';
 import { useSort } from '@/shared/ui/sort-select/use-sort';
 import { Spinner } from '@/shared/ui/spinner';
 import {
@@ -33,6 +42,7 @@ import {
   TableRow,
 } from '@/shared/ui/table';
 
+import type { ProductStatus } from '../../model/types';
 import { useGetProducts } from '../../model/use-get-products';
 
 import { columns } from './columns';
@@ -42,7 +52,14 @@ export const ProductsTable = () => {
     image: false,
   });
 
-  const { value, sort, order, onChangeSort } = useSort();
+  const [status, setStatus] = useQueryState(
+    'status',
+    parseAsStringEnum(['IN_SALE', 'ARCHIVED', 'DRAFT', 'ALL']).withDefault(
+      'ALL',
+    ),
+  );
+
+  const { sort, order, onChangeSort } = useSort();
   const [currentCategory, setCurrentCategory] = useState('all');
   const [searchValue, setSearchValue] = useQueryState('query', {
     defaultValue: '',
@@ -51,6 +68,7 @@ export const ProductsTable = () => {
   const { data, fetchNextPage, hasNextPage, isLoading } = useGetProducts({
     sort,
     order,
+    status: status === 'ALL' ? undefined : status,
     query: searchValue,
     categorySlug: currentCategory === 'all' ? undefined : currentCategory,
   });
@@ -72,9 +90,13 @@ export const ProductsTable = () => {
     },
   });
 
+  const handleChangeStatus = (value: ProductStatus) => {
+    setStatus(value);
+  };
+
   return (
     <>
-      <div className="flex items-center gap-4 pb-4">
+      <div className="flex gap-4 pb-4 items-end">
         <Link
           to={ROUTES.products.add}
           className={buttonVariants({ variant: 'default' })}
@@ -88,12 +110,31 @@ export const ProductsTable = () => {
           onCancel={() => setSearchValue('')}
         />
 
-        <SortSelect value={value} onValueChange={onChangeSort} />
+        <SortSelect
+          value={`${sort}_${order}` as CurrentSortValue}
+          onValueChange={onChangeSort}
+        />
 
         <CategorySelector
           value={currentCategory}
           onValueChange={setCurrentCategory}
         />
+
+        <div>
+          <Label className="mb-2">Статус:</Label>
+          <Select onValueChange={handleChangeStatus} value={status}>
+            <SelectTrigger className="min-w-[130px]">
+              <SelectValue placeholder="Выберите статус" />
+            </SelectTrigger>
+
+            <SelectContent>
+              <SelectItem value="ALL">Все</SelectItem>
+              <SelectItem value="IN_SALE">В продаже</SelectItem>
+              <SelectItem value="ARCHIVED">В архиве</SelectItem>
+              <SelectItem value="DRAFT">Черновик</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
