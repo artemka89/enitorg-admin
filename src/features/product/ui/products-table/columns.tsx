@@ -1,12 +1,18 @@
 import { href, Link } from 'react-router';
 import { type ColumnDef } from '@tanstack/react-table';
 
+import { formatDate } from '@/shared/lib/format-date';
 import { formatPrice } from '@/shared/lib/format-price';
 import { ROUTES } from '@/shared/routes';
 
 import { type Product } from '../../model/types';
 
 export const columns: ColumnDef<Product>[] = [
+  {
+    accessorKey: 'updatedAt',
+    header: 'Обновлено',
+    cell: ({ row }) => formatDate(row.getValue('updatedAt')),
+  },
   {
     accessorKey: 'image',
     header: 'Изобр.',
@@ -58,14 +64,6 @@ export const columns: ColumnDef<Product>[] = [
         </ul>
       );
     },
-  },
-  {
-    accessorKey: 'packageQuantity',
-    header: 'Кол. в уп.',
-  },
-  {
-    accessorKey: 'weight',
-    header: 'Вес гр.',
   },
   {
     accessorKey: 'price',

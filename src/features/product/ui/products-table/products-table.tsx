@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useLayoutEffect, useMemo, useRef, useState } from 'react';
 import { Link } from 'react-router';
 import {
   flexRender,
@@ -48,8 +48,13 @@ import { useGetProducts } from '../../model/use-get-products';
 import { columns } from './columns';
 
 export const ProductsTable = () => {
+  const tableContainerRef = useRef<HTMLDivElement>(null);
+  const bottomControlsRef = useRef<HTMLDivElement>(null);
+  const [tableHeight, setTableHeight] = useState('auto');
+
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({
     image: false,
+    updatedAt: false,
   });
 
   const [status, setStatus] = useQueryState(
@@ -93,6 +98,26 @@ export const ProductsTable = () => {
   const handleChangeStatus = (value: ProductStatus) => {
     setStatus(value);
   };
+
+  useLayoutEffect(() => {
+    const handleResize = () => {
+      if (tableContainerRef.current && bottomControlsRef.current) {
+        const tableContainerTop =
+          tableContainerRef.current.getBoundingClientRect().top;
+        const bottomControlsHeight =
+          bottomControlsRef.current.getBoundingClientRect().height;
+        const newHeight =
+          window.innerHeight - tableContainerTop - bottomControlsHeight - 16;
+
+        setTableHeight(`${newHeight}px`);
+      }
+    };
+
+    handleResize();
+    window.addEventListener('resize', handleResize);
+
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   return (
     <>
@@ -164,8 +189,17 @@ export const ProductsTable = () => {
           </DropdownMenuContent>
         </DropdownMenu>
       </div>
-      <div className="overflow-hidden border">
-        <Table className={cn({ 'h-full': isLoading })}>
+      <div
+        ref={tableContainerRef}
+        className="overflow-hidden border"
+        style={{ height: tableHeight }}
+      >
+        <Table
+          containerClassName="overflow-auto h-full table-scrollbar"
+          className={cn({
+            'h-full': isLoading,
+          })}
+        >
           <TableHeader className="sticky top-0 bg-secondary z-50 shadow-xl">
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -223,7 +257,10 @@ export const ProductsTable = () => {
           </TableBody>
         </Table>
       </div>
-      <div className="flex items-center justify-end space-x-2 py-4">
+      <div
+        ref={bottomControlsRef}
+        className="flex items-center justify-end space-x-2 py-4"
+      >
         <Button
           variant="outline"
           size="sm"
