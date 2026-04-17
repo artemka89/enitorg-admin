@@ -1,5 +1,11 @@
-import { type FC } from 'react';
-import { type Control, useFieldArray } from 'react-hook-form';
+import {
+  type Control,
+  type FieldArray,
+  type FieldArrayPath,
+  type FieldValues,
+  type Path,
+  useFieldArray,
+} from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { MeasurementSelect } from '@/features/measurement';
@@ -14,20 +20,31 @@ import {
 import { Input } from '@/shared/ui/input';
 import { Typography } from '@/shared/ui/typography';
 
-import { type ProductFormSchema } from '../../model/product-form-schema';
+interface AttributesFieldsProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldArrayPath<TFieldValues>;
+}
 
-export const VariantAttributesFields: FC<{
-  variantIndex: number;
-  control: Control<ProductFormSchema>;
-}> = ({ control, variantIndex }) => {
+export function AttributesFields<TFieldValues extends FieldValues>({
+  control,
+  name,
+}: AttributesFieldsProps<TFieldValues>) {
   const {
     fields: attributeFields,
     append: appendAttribute,
     remove: removeAttribute,
   } = useFieldArray({
     control,
-    name: `variants.${variantIndex}.attributes`,
+    name,
   });
+
+  const addAttribute = () => {
+    appendAttribute({
+      value: '',
+      measurementNameId: '',
+      measurementUnitId: '',
+    } as FieldArray<TFieldValues, typeof name>);
+  };
 
   return (
     <div className="space-y-3">
@@ -40,7 +57,7 @@ export const VariantAttributesFields: FC<{
             <div className="flex-1">
               <FormField
                 control={control}
-                name={`variants.${variantIndex}.attributes.${index}.value`}
+                name={`${name}.${index}.value` as Path<TFieldValues>}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Значение *</FormLabel>
@@ -53,9 +70,7 @@ export const VariantAttributesFields: FC<{
               />
             </div>
 
-            <MeasurementSelect
-              basePath={`variants.${variantIndex}.attributes.${index}`}
-            />
+            <MeasurementSelect basePath={`${name}.${index}`} />
             <div className="flex pt-[22px] gap-2">
               <Button
                 type="button"
@@ -69,20 +84,10 @@ export const VariantAttributesFields: FC<{
           </div>
         ))}
       </div>
-      <Button
-        type="button"
-        size="sm"
-        onClick={() =>
-          appendAttribute({
-            value: '',
-            measurementNameId: '',
-            measurementUnitId: '',
-          })
-        }
-      >
+      <Button type="button" size="sm" onClick={addAttribute}>
         <Plus />
         Добавить атрибут
       </Button>
     </div>
   );
-};
+}

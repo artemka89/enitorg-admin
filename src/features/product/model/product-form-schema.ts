@@ -57,8 +57,10 @@ export const ProductFormSchema = z.object({
 });
 
 export const AddProductsSchema = z.object({
-  products: z.array(ProductFormSchema),
+  items: z.array(ProductFormSchema),
 });
 
+export type ProductVariantSchema = z.infer<typeof ProductVariantSchema>;
+export type ProductAttributeSchema = z.infer<typeof ProductAttributeSchema>;
 export type ProductFormSchema = z.infer<typeof ProductFormSchema>;
 export type AddProductsSchema = z.infer<typeof AddProductsSchema>;

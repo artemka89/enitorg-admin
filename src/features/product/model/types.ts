@@ -13,6 +13,25 @@ export interface Product {
   variants: ProductVariant[];
 }
 
+export interface AddProduct {
+  name: string;
+  status: ProductStatus;
+  description: string;
+  specifications: ProductSpecification[];
+  categoryIds: string[];
+  variants: UpdateProductVariant[];
+}
+
+export interface UpdateProduct {
+  id: string;
+  name: string;
+  status: ProductStatus;
+  description: string;
+  specifications: ProductSpecification[];
+  categoryIds: string[];
+  variants: UpdateProductVariant[];
+}
+
 export interface ProductVariant {
   createdAt: Date;
   id: string;
@@ -50,28 +69,6 @@ export interface ProductCategory {
   slug: string;
   parentId?: string;
   children?: Omit<ProductCategory, 'children'>[];
-}
-
-export interface AddProduct {
-  name: string;
-  code: string;
-  price: number;
-  weight: number;
-  packageQuantity: number;
-  description: string | null;
-  specifications: ProductSpecification[];
-  imageUrls: string[];
-  categoryIds: string[];
-}
-
-export interface UpdateProduct {
-  id: string;
-  name: string;
-  status: ProductStatus;
-  description: string | null;
-  specifications: ProductSpecification[];
-  categoryIds: string[];
-  variants: UpdateProductVariant[];
 }
 
 export interface UpdateProductVariant {

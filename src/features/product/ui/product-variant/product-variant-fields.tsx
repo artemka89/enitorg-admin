@@ -1,18 +1,35 @@
-import { type FC, useState } from 'react';
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useState } from 'react';
+import {
+  type Control,
+  type FieldArray,
+  type FieldArrayPath,
+  type FieldValues,
+  type Path,
+  useFieldArray,
+  useFormContext,
+} from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
 import { Button } from '@/shared/ui/button';
 import { Typography } from '@/shared/ui/typography';
 
-import { type ProductFormSchema } from '../../model/product-form-schema';
+import type {
+  ProductAttributeSchema,
+  ProductVariantSchema,
+} from '../../model/product-form-schema';
 
 import { ProductVariantModal } from './product-variant-modal';
 
-export const VariantFields: FC = () => {
-  const formName = 'variants';
+interface VariantFieldsProps<TFieldValues extends FieldValues> {
+  control: Control<TFieldValues>;
+  name: FieldArrayPath<TFieldValues>;
+}
 
-  const { control, getValues } = useFormContext<ProductFormSchema>();
+export function ProductVariantFields<TFieldValues extends FieldValues>({
+  control,
+  name,
+}: VariantFieldsProps<TFieldValues>) {
+  const { getValues } = useFormContext<TFieldValues>();
 
   const [editingVariantIndex, setEditingVariantIndex] = useState<number | null>(
     null,
@@ -20,52 +37,43 @@ export const VariantFields: FC = () => {
 
   const { fields, append, remove } = useFieldArray({
     control,
-    name: formName,
+    name,
     keyName: 'key',
   });
-
-  const currentVariant = editingVariantIndex
-    ? getValues(formName)[editingVariantIndex]
-    : null;
 
   const getVariantTitle = (index: number) => {
     if (index === null) return '';
 
-    const code = getValues(formName)[index].code;
+    const variant = getValues(name as Path<TFieldValues>)[index];
 
-    return `${getValues(formName)
-      [index].attributes.map(
-        (attr) => `${attr.value}${attr.measurementUnit || ''}`,
-      )
-      .join(', ')}${code && ` - ${code}`}`;
+    return `Вариант ${index + 1}: ${(
+      getValues(name as Path<TFieldValues>)[index]
+        .attributes as ProductAttributeSchema[]
+    )
+      .map((attr) => `${attr.value}${attr.measurementUnit || ''}`)
+      .join(', ')}${variant.code && ` - ${variant.code}`}`;
   };
 
   const addNewVariant = () => {
-    const lastVariant = getValues(formName).at(-1);
+    const lastVariant = getValues(name as Path<TFieldValues>).at(-1);
 
     append({
       id: '',
-      code: '',
+      code: Number.isNaN(Number(lastVariant.code))
+        ? ''
+        : Number(lastVariant.code) + 1,
       price: 0,
       imageUrls: [],
       status: lastVariant?.status || 'IN_SALE',
       minSaleQuantity: lastVariant?.minSaleQuantity || 1,
       attributes: lastVariant?.attributes || [],
       specifications: lastVariant?.specifications || [],
-    });
+    } as FieldArray<TFieldValues, typeof name>);
 
     setEditingVariantIndex(fields.length);
   };
 
   const handleCloseDialog = () => {
-    if (editingVariantIndex !== null) {
-      const attributesCount = currentVariant?.attributes?.length;
-
-      if (attributesCount === 0) {
-        remove(editingVariantIndex);
-      }
-    }
-
     setEditingVariantIndex(null);
   };
 
@@ -75,35 +83,39 @@ export const VariantFields: FC = () => {
         Варианты
       </Typography>
       <div className="space-y-2">
-        {fields.map((field, index) => (
-          <div
-            key={field.key}
-            className="flex items-center justify-between gap-2"
-          >
-            <Button
-              variant="outline"
-              type="button"
-              className="flex-1 justify-start truncate"
-              onClick={() => setEditingVariantIndex(index)}
+        {fields.map((field, index) => {
+          const variant = field as unknown as ProductVariantSchema & {
+            key: string;
+          };
+
+          return (
+            <div
+              key={variant.key}
+              className="flex items-center justify-between gap-2"
             >
-              <Typography tag="p">
-                Вариант {index + 1}: {getVariantTitle(index)}
-              </Typography>
-            </Button>
-            {!field.id && (
               <Button
-                type="button"
                 variant="outline"
-                size="icon"
-                className="text-destructive"
-                disabled={!!field.id}
-                onClick={() => remove(index)}
+                type="button"
+                className="flex-1 justify-start truncate"
+                onClick={() => setEditingVariantIndex(index)}
               >
-                <Trash2 className="size-4" />
+                <Typography tag="p">{getVariantTitle(index)}</Typography>
               </Button>
-            )}
-          </div>
-        ))}
+              {!variant.id && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  className="text-destructive"
+                  disabled={!!variant.id}
+                  onClick={() => remove(index)}
+                >
+                  <Trash2 className="size-4" />
+                </Button>
+              )}
+            </div>
+          );
+        })}
         <Button type="button" size="sm" onClick={addNewVariant}>
           <Plus className="mr-2 size-4" />
           Добавить вариант
@@ -111,9 +123,11 @@ export const VariantFields: FC = () => {
       </div>
 
       <ProductVariantModal
+        name={name}
+        getTitle={getVariantTitle}
         editingIndex={editingVariantIndex}
         onClose={handleCloseDialog}
       />
     </div>
   );
-};
+}

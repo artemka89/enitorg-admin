@@ -24,7 +24,7 @@ import { ProductFormSchema } from '../model/product-form-schema';
 import { useEditProduct } from '../model/use-edit-product';
 import { useGetProduct } from '../model/use-get-product';
 
-import { VariantFields } from './product-variant/product-variant-fields';
+import { ProductVariantFields } from './product-variant/product-variant-fields';
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ProductStatusSelect } from './product-status-select';
 import { SpecificationFields } from './specification-fields';
@@ -146,7 +146,7 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             </FormItem>
           )}
         />
-        <VariantFields />
+        <ProductVariantFields control={form.control} name="variants" />
         <FormField
           control={form.control}
           name="description"

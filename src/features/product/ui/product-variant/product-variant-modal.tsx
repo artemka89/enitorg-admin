@@ -1,5 +1,10 @@
-import { type FC } from 'react';
-import { useFormContext } from 'react-hook-form';
+import {
+  type ArrayPath,
+  type FieldArrayPath,
+  type FieldValues,
+  type Path,
+  useFormContext,
+} from 'react-hook-form';
 
 import { Button } from '@/shared/ui/button';
 import {
@@ -23,40 +28,31 @@ import { SelectSeparator } from '@/shared/ui/select';
 import { SortableImagePreviews } from '@/shared/ui/sortable-image-previews';
 import { Typography } from '@/shared/ui/typography';
 
-import { type ProductFormSchema } from '../../model/product-form-schema';
 import { ImageUploadField } from '../image-upload-field';
 import { ProductCodeInput } from '../product-code-input';
 import { ProductStatusSelect } from '../product-status-select';
 import { SpecificationFields } from '../specification-fields';
 
-import { VariantAttributesFields } from './product-attribute-field';
+import { AttributesFields } from './product-attribute-field';
 
-interface ProductVariantModalProps {
+interface ProductVariantModalProps<TFieldValues extends FieldValues> {
+  name: FieldArrayPath<TFieldValues>;
   editingIndex: number | null;
+  getTitle: (index: number) => string;
   onClose: () => void;
 }
 
-export const ProductVariantModal: FC<ProductVariantModalProps> = ({
+export function ProductVariantModal<TFieldValues extends FieldValues>({
+  name,
   editingIndex,
+  getTitle,
   onClose,
-}) => {
+}: ProductVariantModalProps<TFieldValues>) {
   const { control, getValues, trigger, watch, resetField } =
-    useFormContext<ProductFormSchema>();
-
-  const getTitle = (index: number) => {
-    if (index === null) return '';
-
-    const code = getValues('variants')[index].code;
-
-    return `${getValues('variants')
-      [index].attributes.map(
-        (attr) => `${attr.value}${attr.measurementUnit || ''}`,
-      )
-      .join(', ')}${code && ` - ${code}`}`;
-  };
+    useFormContext<TFieldValues>();
 
   const getImageName = (index: number) => {
-    const variants = getValues('variants');
+    const variants = getValues(name as Path<TFieldValues>);
     return `${variants?.[index].code}-${
       variants?.[index]?.imageUrls?.length + 1
     }`;
@@ -69,11 +65,11 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
     }
 
     const isValid = await trigger([
-      `variants.${editingIndex}.code`,
-      `variants.${editingIndex}.price`,
-      `variants.${editingIndex}.imageUrls`,
-      `variants.${editingIndex}.specifications`,
-      `variants.${editingIndex}.attributes`,
+      `${name}.${editingIndex}.code` as Path<TFieldValues>,
+      `${name}.${editingIndex}.price` as Path<TFieldValues>,
+      `${name}.${editingIndex}.imageUrls` as Path<TFieldValues>,
+      `${name}.${editingIndex}.specifications` as Path<TFieldValues>,
+      `${name}.${editingIndex}.attributes` as Path<TFieldValues>,
     ]);
 
     if (!isValid) return;
@@ -84,13 +80,13 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
   const handleReset = () => {
     if (editingIndex === null) return;
 
-    resetField(`variants.${editingIndex}.code`);
-    resetField(`variants.${editingIndex}.price`);
-    resetField(`variants.${editingIndex}.attributes`);
-    resetField(`variants.${editingIndex}.specifications`);
-    resetField(`variants.${editingIndex}.imageUrls`);
-    resetField(`variants.${editingIndex}.status`);
-    resetField(`variants.${editingIndex}.minSaleQuantity`);
+    resetField(`${name}.${editingIndex}.code` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.price` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.attributes` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.specifications` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.imageUrls` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.status` as Path<TFieldValues>);
+    resetField(`${name}.${editingIndex}.minSaleQuantity` as Path<TFieldValues>);
   };
 
   return (
@@ -109,7 +105,7 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 <div className="flex-1">
                   <FormField
                     control={control}
-                    name={`variants.${editingIndex}.price`}
+                    name={`${name}.${editingIndex}.price` as Path<TFieldValues>}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Цена *</FormLabel>
@@ -118,9 +114,7 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                             {...field}
                             type="number"
                             onChange={(e) =>
-                              field.onChange(
-                                Number.parseFloat(e.target.value) || 1,
-                              )
+                              field.onChange(Number.parseFloat(e.target.value))
                             }
                           />
                         </FormControl>
@@ -132,7 +126,7 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 <div>
                   <FormField
                     control={control}
-                    name={`variants.${editingIndex}.code`}
+                    name={`${name}.${editingIndex}.code` as Path<TFieldValues>}
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Код товара *</FormLabel>
@@ -153,7 +147,9 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 <div className="max-w-[190px]">
                   <FormField
                     control={control}
-                    name={`variants.${editingIndex}.minSaleQuantity`}
+                    name={
+                      `${name}.${editingIndex}.minSaleQuantity` as Path<TFieldValues>
+                    }
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Мин. кол-во для продажи *</FormLabel>
@@ -162,9 +158,7 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                             {...field}
                             type="number"
                             onChange={(e) =>
-                              field.onChange(
-                                Number.parseInt(e.target.value) || 1,
-                              )
+                              field.onChange(Number.parseInt(e.target.value))
                             }
                           />
                         </FormControl>
@@ -176,7 +170,9 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 <div>
                   <FormField
                     control={control}
-                    name={`variants.${editingIndex}.status`}
+                    name={
+                      `${name}.${editingIndex}.status` as Path<TFieldValues>
+                    }
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Статус</FormLabel>
@@ -195,7 +191,7 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
               <SelectSeparator className="bg-primary/60 my-6" />
               <FormField
                 control={control}
-                name={`variants.${editingIndex}.imageUrls`}
+                name={`${name}.${editingIndex}.imageUrls` as Path<TFieldValues>}
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>Изображения *</FormLabel>
@@ -205,7 +201,11 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                           imageUrls={field.value}
                           onImagesChange={field.onChange}
                           fileName={getImageName(editingIndex)}
-                          disabled={!watch(`variants.${editingIndex}.code`)}
+                          disabled={
+                            !watch(
+                              `${name}.${editingIndex}.code` as Path<TFieldValues>,
+                            )
+                          }
                         />
                         <SortableImagePreviews
                           imageUrls={field.value}
@@ -219,8 +219,10 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 )}
               />
               <SelectSeparator className="bg-primary/60 my-6" />
-              <VariantAttributesFields
-                variantIndex={editingIndex}
+              <AttributesFields
+                name={
+                  `${name}.${editingIndex}.attributes` as ArrayPath<TFieldValues>
+                }
                 control={control}
               />
               <SelectSeparator className="bg-primary/60 my-6" />
@@ -230,7 +232,9 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
                 </Typography>
                 <SpecificationFields
                   control={control}
-                  name={`variants.${editingIndex}.specifications`}
+                  name={
+                    `${name}.${editingIndex}.specifications` as ArrayPath<TFieldValues>
+                  }
                 />
               </div>
             </ScrollArea>
@@ -248,4 +252,4 @@ export const ProductVariantModal: FC<ProductVariantModalProps> = ({
       </DialogContent>
     </Dialog>
   );
-};
+}
