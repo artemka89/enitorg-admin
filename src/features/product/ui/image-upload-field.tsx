@@ -9,7 +9,6 @@ interface ImageUploadFieldProps {
   fileName: string;
   onImagesChange: (urls: string[]) => void;
   disabled?: boolean;
-  isCodeFilled?: boolean;
 }
 
 export function ImageUploadField({

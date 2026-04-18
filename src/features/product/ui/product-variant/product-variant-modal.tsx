@@ -48,7 +48,7 @@ export function ProductVariantModal<TFieldValues extends FieldValues>({
   getTitle,
   onClose,
 }: ProductVariantModalProps<TFieldValues>) {
-  const { control, getValues, trigger, watch, resetField } =
+  const { control, getValues, trigger, resetField } =
     useFormContext<TFieldValues>();
 
   const getImageName = (index: number) => {
@@ -70,6 +70,7 @@ export function ProductVariantModal<TFieldValues extends FieldValues>({
       `${name}.${editingIndex}.imageUrls` as Path<TFieldValues>,
       `${name}.${editingIndex}.specifications` as Path<TFieldValues>,
       `${name}.${editingIndex}.attributes` as Path<TFieldValues>,
+      `${name}.${editingIndex}.minSaleQuantity` as Path<TFieldValues>,
     ]);
 
     if (!isValid) return;
@@ -133,6 +134,7 @@ export function ProductVariantModal<TFieldValues extends FieldValues>({
                         <FormControl>
                           <ProductCodeInput
                             index={editingIndex}
+                            fieldName={`${name}.${editingIndex}.code`}
                             {...field}
                             // TODO: временно разрешаем изменять код
                             // disabled={!!getValues('variants')[editingIndex].id}
@@ -202,7 +204,7 @@ export function ProductVariantModal<TFieldValues extends FieldValues>({
                           onImagesChange={field.onChange}
                           fileName={getImageName(editingIndex)}
                           disabled={
-                            !watch(
+                            !getValues(
                               `${name}.${editingIndex}.code` as Path<TFieldValues>,
                             )
                           }

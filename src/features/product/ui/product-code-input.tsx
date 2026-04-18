@@ -12,11 +12,12 @@ import { useCheckProductCode } from '../model/use-check-product-code';
 import { useGenerateProductCode } from '../model/use-generate-product-code';
 
 interface ProductCodeInputProps extends React.ComponentProps<'input'> {
+  fieldName: string;
   index: number;
 }
 
 export const ProductCodeInput: FC<ProductCodeInputProps> = ({
-  name = 'code',
+  fieldName,
   onChange,
   className,
   ...props
@@ -29,19 +30,19 @@ export const ProductCodeInput: FC<ProductCodeInputProps> = ({
 
   const debouncedCheckCode = useDebouncedCallback((code: string) => {
     if (!code) {
-      clearErrors(name);
+      clearErrors(fieldName);
       return;
     }
 
     checkCode(code, {
       onSuccess: (data) => {
         if (data.exist) {
-          setError(name, {
+          setError(fieldName, {
             type: 'manual',
             message: 'Товар с таким кодом уже существует',
           });
         } else {
-          clearErrors(name);
+          clearErrors(fieldName);
         }
       },
     });
@@ -55,7 +56,10 @@ export const ProductCodeInput: FC<ProductCodeInputProps> = ({
   const handleOnGenerateCode = () => {
     generateCode(undefined, {
       onSuccess: (data) => {
-        setValue(name, data.code);
+        setValue(fieldName, data.code);
+      },
+      onSettled: () => {
+        clearErrors(fieldName);
       },
     });
   };

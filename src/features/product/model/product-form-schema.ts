@@ -38,10 +38,12 @@ const ProductVariantSchema = z.object({
   id: z.string().optional(),
   code: z.string().min(5, { error: 'Введите код варианта' }),
   status: ProductStatusSchema,
-  price: z.number().min(1, { error: 'Цена должна быть больше 0' }),
+  price: z
+    .number({ error: 'Введите цену' })
+    .min(1, { error: 'Цена должна быть больше 0' }),
   imageUrls: ProductImageUrlsSchema,
   minSaleQuantity: z
-    .number()
+    .number({ error: 'Введите минимальное количество' })
     .min(1, { error: 'Минимальное количество должно быть больше 0' }),
   attributes: z.array(ProductAttributeSchema),
   specifications: z.array(ProductSpecificationSchema),

@@ -10,6 +10,7 @@ import {
 } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
+import { formatPrice } from '@/shared/lib/format-price';
 import { Button } from '@/shared/ui/button';
 import { Typography } from '@/shared/ui/typography';
 
@@ -46,7 +47,7 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
 
     const variant = getValues(name as Path<TFieldValues>)[index];
 
-    return `Вариант ${index + 1}: ${(
+    return `Вариант ${index + 1}: ${formatPrice(variant.price)} - ${(
       getValues(name as Path<TFieldValues>)[index]
         .attributes as ProductAttributeSchema[]
     )
@@ -61,7 +62,7 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
       id: '',
       code: Number.isNaN(Number(lastVariant.code))
         ? ''
-        : Number(lastVariant.code) + 1,
+        : String(Number(lastVariant.code) + 1),
       price: 0,
       imageUrls: [],
       status: lastVariant?.status || 'IN_SALE',
