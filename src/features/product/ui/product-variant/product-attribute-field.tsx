@@ -8,7 +8,7 @@ import {
 } from 'react-hook-form';
 import { Plus, Trash2 } from 'lucide-react';
 
-import { MeasurementSelect } from '@/features/measurement';
+import { MeasurementSelect, MeasurementsForm } from '@/features/measurement';
 import { Button } from '@/shared/ui/button';
 import {
   FormControl,
@@ -48,9 +48,12 @@ export function AttributesFields<TFieldValues extends FieldValues>({
 
   return (
     <div className="space-y-3">
-      <Typography tag="p" size="xl" weight="bold">
-        Атрибуты
-      </Typography>
+      <div className="flex justify-between">
+        <Typography tag="p" size="xl" weight="bold">
+          Атрибуты
+        </Typography>
+        <MeasurementsForm />
+      </div>
       <div className="space-y-3">
         {attributeFields.map((field, index) => (
           <div key={field.id} className="flex gap-2 mb-4">

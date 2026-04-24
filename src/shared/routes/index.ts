@@ -26,6 +26,10 @@ export const API_ROUTES = {
   measurements: {
     base: '/admin/measurements',
     byId: (id: string) => `/admin/measurements/${id}`,
+    add: '/admin/measurements',
+    update: (id: string) => `/admin/measurements/${id}`,
+    addUnit: '/admin/measurements/unit',
+    updateUnit: (id: string) => `/admin/measurements/unit/${id}`,
   },
 } as const;
 

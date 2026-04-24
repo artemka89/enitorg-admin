@@ -47,12 +47,14 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
 
     const variant = getValues(name as Path<TFieldValues>)[index];
 
-    return `Вариант ${index + 1}: ${formatPrice(variant.price)} - ${(
-      getValues(name as Path<TFieldValues>)[index]
-        .attributes as ProductAttributeSchema[]
-    )
-      .map((attr) => `${attr.value}${attr.measurementUnit || ''}`)
-      .join(', ')}${variant.code && ` - ${variant.code}`}`;
+    const attributeNames =
+      variant.attributes.length > 0
+        ? ` - ${(variant.attributes as ProductAttributeSchema[])
+            .map((attr) => `${attr.value}${attr.measurementUnit || ''}`)
+            .join(', ')}`
+        : '';
+
+    return `Вариант ${index + 1}: ${formatPrice(variant.price)}${attributeNames}${variant.code && ` - ${variant.code}`}`;
   };
 
   const addNewVariant = () => {
@@ -60,9 +62,7 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
 
     append({
       id: '',
-      code: Number.isNaN(Number(lastVariant.code))
-        ? ''
-        : String(Number(lastVariant.code) + 1),
+      code: lastVariant?.code ? String(Number(lastVariant.code) + 1) : '',
       price: 0,
       imageUrls: [],
       status: lastVariant?.status || 'IN_SALE',
