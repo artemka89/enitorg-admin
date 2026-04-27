@@ -1,7 +1,6 @@
-import type React from 'react';
 import { type FC, useCallback, useState } from 'react';
 import Cropper from 'react-easy-crop';
-import { RotateCw, Upload } from 'lucide-react';
+import { Plus, RotateCw, Upload } from 'lucide-react';
 
 import { centerImageOnSquare } from '@/shared/lib/center-image-on-square';
 import {
@@ -14,12 +13,14 @@ import {
   Dialog,
   DialogClose,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTitle,
   DialogTrigger,
 } from '@/shared/ui/dialog';
 import { Input } from '@/shared/ui/input';
 import { Label } from '@/shared/ui/label';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
 
 interface Point {
   x: number;
@@ -27,16 +28,18 @@ interface Point {
 }
 
 interface ImageCropperModalProps {
-  buttonTrigger: React.ReactNode;
   onCrop: (file: File) => void;
   fileName: string;
+  disabled: boolean;
 }
 
 export const ImageCropperModal: FC<ImageCropperModalProps> = ({
-  buttonTrigger,
   onCrop,
   fileName,
+  disabled,
 }) => {
+  const [isOpen, setIsOpen] = useState(false);
+
   const [image, setImage] = useState<File | null>(null);
 
   const [crop, setCrop] = useState<Point>({ x: 0, y: 0 });
@@ -98,10 +101,26 @@ export const ImageCropperModal: FC<ImageCropperModalProps> = ({
   };
 
   return (
-    <Dialog>
-      {buttonTrigger && <DialogTrigger>{buttonTrigger}</DialogTrigger>}
+    <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Tooltip>
+        <TooltipTrigger asChild>
+          <span className="inline-block">
+            <DialogTrigger asChild>
+              <Button type="button" disabled={disabled}>
+                <Plus className="h-4 w-4" />
+                Загрузить изображение
+              </Button>
+            </DialogTrigger>
+          </span>
+        </TooltipTrigger>
+        <TooltipContent hidden={!disabled} className="max-w-56 text-center">
+          Для загрузки изображений необходимо заполнить код товара
+        </TooltipContent>
+      </Tooltip>
+
       <DialogContent className="min-w-4xl" showCloseButton={false}>
         <DialogTitle>Загрузка изображения</DialogTitle>
+        <DialogDescription aria-describedby={undefined} />
 
         <div className="space-y-4">
           <div className="relative h-96 w-full overflow-hidden rounded-lg bg-gray-100">

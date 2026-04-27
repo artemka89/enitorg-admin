@@ -42,7 +42,7 @@ export const productApi = {
       enabled: !!id,
     });
   },
-  createMany: (data: AddProduct[]) =>
+  addMany: (data: AddProduct[]) =>
     apiClient({
       url: API_ROUTES.products.base,
       method: 'POST',

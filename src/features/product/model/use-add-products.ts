@@ -7,7 +7,7 @@ import { type AddProduct } from './types';
 
 export const useAddProducts = () => {
   return useMutation({
-    mutationFn: (data: AddProduct[]) => productApi.createMany(data),
+    mutationFn: (data: AddProduct[]) => productApi.addMany(data),
     meta: {
       invalidateQueries: [productKeys.all],
       successMessage: 'Товары успешно созданы',

@@ -30,12 +30,10 @@ export const categoryApi = {
     });
   },
   create: (data: CreateCategory) => {
-    const slug = cyrillicToTranslit(data.name);
-
     return apiClient({
       url: API_ROUTES.categories.base,
       method: 'POST',
-      body: { ...data, slug },
+      body: { ...data },
     });
   },
   update: (data: UpdateCategory) => {

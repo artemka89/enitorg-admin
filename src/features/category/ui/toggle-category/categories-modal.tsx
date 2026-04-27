@@ -6,6 +6,7 @@ import { Button } from '@/shared/ui/button';
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogTitle,
 } from '@/shared/ui/dialog';
@@ -45,6 +46,7 @@ export const CategoriesModal: FC<CategoriesModalProps> = ({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent className="min-w-4xl" showCloseButton={false}>
           <DialogTitle>Выбор категорий</DialogTitle>
+          <DialogDescription aria-describedby={undefined} />
           <ToggleCategory
             categories={categories.items}
             selectedCategories={selectedCategories}

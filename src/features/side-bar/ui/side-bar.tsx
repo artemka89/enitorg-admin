@@ -25,7 +25,7 @@ export const SideBar: FC<SideBarProps> = ({
     <aside
       className={cn(
         className,
-        'gap-2 fixed top-0 left-0 flex h-screen flex-col border-r border-border bg-sidebar transition-all duration-300 w-64',
+        'gap-2 fixed top-0 left-0 flex h-screen flex-col border-r border-border bg-sidebar transition-all duration-300 w-64 z-50 ',
         { ['w-16']: collapsed },
       )}
     >

@@ -2,13 +2,65 @@ export interface Product {
   id: string;
   name: string;
   code: string;
+  status: ProductStatus;
   price: number;
   weight: number;
   packageQuantity: number;
-  description: string | null;
-  specifications: { name: string; value: string }[];
+  description: string;
+  specifications: ProductSpecification[];
   imageUrls: string[];
   categories: ProductCategory[];
+  variants: ProductVariant[];
+}
+
+export interface AddProduct {
+  name: string;
+  status: ProductStatus;
+  description: string;
+  specifications: ProductSpecification[];
+  categoryIds: string[];
+  variants: UpdateProductVariant[];
+}
+
+export interface UpdateProduct {
+  id: string;
+  name: string;
+  status: ProductStatus;
+  description: string;
+  specifications: ProductSpecification[];
+  categoryIds: string[];
+  variants: UpdateProductVariant[];
+}
+
+export interface ProductVariant {
+  createdAt: Date;
+  id: string;
+  slug: string;
+  code: string;
+  status: ProductStatus;
+  price: number;
+  imageUrls: string[];
+  specifications: ProductSpecification[];
+  minSaleQuantity: number;
+  attributes: ProductAttribute[];
+}
+
+export interface ProductAttribute {
+  value: string;
+  measurementNameId: string;
+  measurementName: string;
+  measurementUnitId: string | null;
+  measurementUnit?: string;
+}
+
+export interface Measurement {
+  id: string;
+  name: string;
+}
+
+export interface MeasurementUnit {
+  id: string;
+  name: string;
 }
 
 export interface ProductCategory {
@@ -19,30 +71,26 @@ export interface ProductCategory {
   children?: Omit<ProductCategory, 'children'>[];
 }
 
-export interface AddProduct {
-  name: string;
-  code: string;
+export interface UpdateProductVariant {
+  id?: string;
+  status: ProductStatus;
   price: number;
-  weight: number;
-  packageQuantity: number;
-  description: string | null;
-  specifications: { name: string; value: string }[];
   imageUrls: string[];
-  categoryIds: string[];
+  specifications: ProductSpecification[];
+  minSaleQuantity: number;
+  attributes: {
+    value: string;
+    measurementNameId: string;
+    measurementUnitId: string | null;
+  }[];
 }
 
-export interface UpdateProduct {
-  id: string;
+export interface ProductSpecification {
   name: string;
-  code: string;
-  price: number;
-  weight: number;
-  packageQuantity: number;
-  description: string | null;
-  specifications: { name: string; value: string }[];
-  imageUrls: string[];
-  categoryIds: string[];
+  value: string;
 }
+
+export type ProductStatus = 'IN_SALE' | 'ARCHIVED' | 'DRAFT';
 
 export interface ProductsParams {
   categorySlug?: string;
@@ -50,4 +98,5 @@ export interface ProductsParams {
   order?: 'asc' | 'desc';
   query?: string;
   limit?: number;
+  status?: ProductStatus;
 }

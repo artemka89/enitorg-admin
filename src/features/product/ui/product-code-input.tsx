@@ -3,6 +3,7 @@ import { useFormContext } from 'react-hook-form';
 import { WandSparkles } from 'lucide-react';
 
 import { useDebouncedCallback } from '@/shared/hooks/use-debounced-callback';
+import { cn } from '@/shared/lib/cn';
 import { Button } from '@/shared/ui/button';
 import { Input } from '@/shared/ui/input';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/shared/ui/tooltip';
@@ -11,13 +12,14 @@ import { useCheckProductCode } from '../model/use-check-product-code';
 import { useGenerateProductCode } from '../model/use-generate-product-code';
 
 interface ProductCodeInputProps extends React.ComponentProps<'input'> {
+  fieldName: string;
   index: number;
 }
 
 export const ProductCodeInput: FC<ProductCodeInputProps> = ({
-  index,
-  name = 'productCode',
+  fieldName,
   onChange,
+  className,
   ...props
 }) => {
   const { setError, clearErrors, setValue } = useFormContext();
@@ -28,19 +30,19 @@ export const ProductCodeInput: FC<ProductCodeInputProps> = ({
 
   const debouncedCheckCode = useDebouncedCallback((code: string) => {
     if (!code) {
-      clearErrors(name);
+      clearErrors(fieldName);
       return;
     }
 
     checkCode(code, {
       onSuccess: (data) => {
         if (data.exist) {
-          setError(name, {
+          setError(fieldName, {
             type: 'manual',
             message: 'Товар с таким кодом уже существует',
           });
         } else {
-          clearErrors(name);
+          clearErrors(fieldName);
         }
       },
     });
@@ -54,14 +56,16 @@ export const ProductCodeInput: FC<ProductCodeInputProps> = ({
   const handleOnGenerateCode = () => {
     generateCode(undefined, {
       onSuccess: (data) => {
-        const nextCode = index === 0 ? data.code : Number(data.code) + index;
-        setValue(name, nextCode.toString());
+        setValue(fieldName, data.code);
+      },
+      onSettled: () => {
+        clearErrors(fieldName);
       },
     });
   };
 
   return (
-    <div className="flex items-center">
+    <div className={cn('flex items-center', className)}>
       <Input {...props} onChange={handleOnChange} className="rounded-r-none" />
       <Tooltip>
         <TooltipTrigger asChild>
@@ -69,7 +73,7 @@ export const ProductCodeInput: FC<ProductCodeInputProps> = ({
             <Button
               type="button"
               onClick={handleOnGenerateCode}
-              disabled={isLoadingGenerateCode}
+              disabled={isLoadingGenerateCode || props.disabled}
               className="rounded-l-none"
             >
               <WandSparkles className="h-4 w-4" />
