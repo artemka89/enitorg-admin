@@ -76,4 +76,17 @@ export const productApi = {
       url: API_ROUTES.products.generateCode,
     });
   },
+  moveVariant: (data: { newProductId: string; variantId: string }) => {
+    return apiClient({
+      url: API_ROUTES.products.moveVariant,
+      method: 'PUT',
+      body: data,
+    });
+  },
+  delete: (id: string) => {
+    return apiClient({
+      url: API_ROUTES.products.delete(id),
+      method: 'DELETE',
+    });
+  },
 };

@@ -12,6 +12,8 @@ export const API_ROUTES = {
     uploadImage: '/admin/products/upload-image',
     checkCode: (code: string) => `/admin/products/check-code/${code}`,
     generateCode: '/admin/products/generate-code',
+    delete: (id: string) => `/admin/products/${id}`,
+    moveVariant: '/admin/products/move-variant',
   },
   categories: {
     base: '/categories',
