@@ -8,7 +8,21 @@ import {
   useFieldArray,
   useFormContext,
 } from 'react-hook-form';
-import { Plus, Trash2 } from 'lucide-react';
+import type { DragEndEvent } from '@dnd-kit/core';
+import {
+  closestCenter,
+  DndContext,
+  KeyboardSensor,
+  PointerSensor,
+  useSensor,
+  useSensors,
+} from '@dnd-kit/core';
+import {
+  rectSortingStrategy,
+  SortableContext,
+  sortableKeyboardCoordinates,
+} from '@dnd-kit/sortable';
+import { Plus } from 'lucide-react';
 
 import { formatPrice } from '@/shared/lib/format-price';
 import { Button } from '@/shared/ui/button';
@@ -20,6 +34,7 @@ import type {
 } from '../../model/product-form-schema';
 
 import { ProductVariantModal } from './product-variant-modal';
+import { SortableProductVariantItem } from './sortable-product-variant-item';
 
 interface VariantFieldsProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
@@ -38,14 +53,33 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
     null,
   );
 
-  const { fields, append, remove } = useFieldArray({
+  const { fields, append, remove, move } = useFieldArray({
     control,
     name,
     keyName: 'key',
   });
 
+  const sensors = useSensors(
+    useSensor(PointerSensor),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
+
+  const handleDragEnd = (event: DragEndEvent) => {
+    const { active, over } = event;
+
+    if (over && active.id !== over.id) {
+      const oldIndex = fields.findIndex((field) => field.key === active.id);
+      const newIndex = fields.findIndex((field) => field.key === over.id);
+
+      move(oldIndex, newIndex);
+    }
+  };
+
   const getVariantTitle = (index: number) => {
-    if (index === null) return '';
+    if (index === null || !getValues(name as Path<TFieldValues>)?.[index])
+      return '';
 
     const variant = getValues(name as Path<TFieldValues>)[index];
 
@@ -85,46 +119,38 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
       <Typography tag="p" size="2xl" weight="semibold">
         Варианты
       </Typography>
-      <div className="space-y-2">
-        {actions}
-        {fields.map((field, index) => {
-          const variant = field as unknown as ProductVariantSchema & {
-            key: string;
-          };
-
-          return (
-            <div
-              key={variant.key}
-              className="flex items-center justify-between gap-2"
-            >
-              <Button
-                variant="outline"
-                type="button"
-                className="flex-1 justify-start truncate"
-                onClick={() => setEditingVariantIndex(index)}
-              >
-                <Typography tag="p">{getVariantTitle(index)}</Typography>
-              </Button>
-              {!variant.id && (
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="icon"
-                  className="text-destructive"
-                  disabled={!!variant.id}
-                  onClick={() => remove(index)}
-                >
-                  <Trash2 className="size-4" />
-                </Button>
-              )}
-            </div>
-          );
-        })}
-        <Button type="button" size="sm" onClick={addNewVariant}>
-          <Plus className="mr-2 size-4" />
-          Добавить вариант
-        </Button>
-      </div>
+      <DndContext
+        sensors={sensors}
+        collisionDetection={closestCenter}
+        onDragEnd={handleDragEnd}
+      >
+        <SortableContext
+          items={fields.map((f) => f.key)}
+          strategy={rectSortingStrategy}
+        >
+          <div className="space-y-2">
+            {actions}
+            {fields.map((field, index) => (
+              <SortableProductVariantItem
+                key={field.key}
+                field={
+                  field as unknown as ProductVariantSchema & {
+                    key: string;
+                  }
+                }
+                index={index}
+                getVariantTitle={getVariantTitle}
+                setEditingVariantIndex={setEditingVariantIndex}
+                remove={remove}
+              />
+            ))}
+            <Button type="button" size="sm" onClick={addNewVariant}>
+              <Plus className="mr-2 size-4" />
+              Добавить вариант
+            </Button>
+          </div>
+        </SortableContext>
+      </DndContext>
 
       <ProductVariantModal
         name={name}

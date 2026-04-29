@@ -85,6 +85,8 @@ export const ProductMoveVariant: FC<ProductMoveVariantProps> = ({
       { newProductId: productId, variantId: selectedItem.value },
       {
         onSuccess: () => {
+          setSearchValue('');
+          setSelectedItem(null);
           toast.success(`Вариант "${selectedItem.label}" перемещен`);
         },
       },
