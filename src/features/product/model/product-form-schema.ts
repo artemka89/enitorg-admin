@@ -59,7 +59,10 @@ export const ProductFormSchema = z
     categoryIds: z.array(z.string()).min(1, { error: 'Выберите категорию' }),
   })
   .superRefine((data, ctx) => {
-    if (data.variants.some((variant) => variant.attributes.length === 0)) {
+    if (
+      data.variants.length > 1 &&
+      data.variants.some((variant) => variant.attributes.length === 0)
+    ) {
       ctx.addIssue({
         code: 'custom',
         path: ['variants'],
