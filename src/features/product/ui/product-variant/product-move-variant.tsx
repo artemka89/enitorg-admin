@@ -102,7 +102,7 @@ export const ProductMoveVariant: FC<ProductMoveVariantProps> = ({
 
   return (
     <>
-      <Label>Переместить вариант</Label>
+      <Label>Переместить вариант c другого товара:</Label>
       <div className={cn('flex items-center', className)}>
         <Popover open={open} onOpenChange={setOpen} modal={true}>
           <PopoverTrigger asChild className="flex-1">

@@ -85,12 +85,16 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
 
     const attributeNames =
       variant.attributes.length > 0
-        ? ` - ${(variant.attributes as ProductAttributeSchema[])
+        ? `${(variant.attributes as ProductAttributeSchema[])
             .map((attr) => `${attr.value}${attr.measurementUnit || ''}`)
             .join(', ')}`
         : '';
 
-    return `Вариант ${index + 1}: ${formatPrice(variant.price)}${attributeNames}${variant.code && ` - ${variant.code}`}`;
+    const price = variant.price ? formatPrice(variant.price) : '';
+    const code = variant.code || '';
+    const params: string[] = [attributeNames, price, code].filter(Boolean);
+
+    return params.filter(Boolean).join(' - ');
   };
 
   const addNewVariant = () => {
