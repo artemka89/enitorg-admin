@@ -24,6 +24,7 @@ import { ProductFormSchema } from '../model/product-form-schema';
 import { useEditProduct } from '../model/use-edit-product';
 import { useGetProduct } from '../model/use-get-product';
 
+import { ProductMoveVariant } from './product-variant/product-move-variant';
 import { ProductVariantFields } from './product-variant/product-variant-fields';
 import { RichTextEditor } from './rich-text-editor/rich-text-editor';
 import { ProductStatusSelect } from './product-status-select';
@@ -146,7 +147,14 @@ export const EditProductForm: FC<EditProductFormProps> = ({
             </FormItem>
           )}
         />
-        <ProductVariantFields control={form.control} name="variants" />
+
+        <ProductVariantFields
+          control={form.control}
+          name="variants"
+          actions={
+            <ProductMoveVariant productId={product?.id} className="mb-4" />
+          }
+        />
         <FormField
           control={form.control}
           name="description"

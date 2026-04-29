@@ -49,14 +49,27 @@ const ProductVariantSchema = z.object({
   specifications: z.array(ProductSpecificationSchema),
 });
 
-export const ProductFormSchema = z.object({
-  name: z.string().min(2, { error: 'Имя должно быть не менее 2 символов' }),
-  status: ProductStatusSchema,
-  description: z.string(),
-  specifications: z.array(ProductSpecificationSchema),
-  variants: z.array(ProductVariantSchema),
-  categoryIds: z.array(z.string()).min(1, { error: 'Выберите категорию' }),
-});
+export const ProductFormSchema = z
+  .object({
+    name: z.string().min(2, { error: 'Имя должно быть не менее 2 символов' }),
+    status: ProductStatusSchema,
+    description: z.string(),
+    specifications: z.array(ProductSpecificationSchema),
+    variants: z.array(ProductVariantSchema),
+    categoryIds: z.array(z.string()).min(1, { error: 'Выберите категорию' }),
+  })
+  .superRefine((data, ctx) => {
+    if (
+      data.variants.length > 1 &&
+      data.variants.some((variant) => variant.attributes.length === 0)
+    ) {
+      ctx.addIssue({
+        code: 'custom',
+        path: ['variants'],
+        message: 'Добавьте хотя бы один атрибут в каждый вариант',
+      });
+    }
+  });
 
 export const AddProductsSchema = z.object({
   items: z.array(ProductFormSchema),

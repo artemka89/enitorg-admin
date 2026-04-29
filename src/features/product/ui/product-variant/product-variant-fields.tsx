@@ -24,11 +24,13 @@ import { ProductVariantModal } from './product-variant-modal';
 interface VariantFieldsProps<TFieldValues extends FieldValues> {
   control: Control<TFieldValues>;
   name: FieldArrayPath<TFieldValues>;
+  actions?: React.ReactNode;
 }
 
 export function ProductVariantFields<TFieldValues extends FieldValues>({
   control,
   name,
+  actions,
 }: VariantFieldsProps<TFieldValues>) {
   const { getValues } = useFormContext<TFieldValues>();
 
@@ -84,6 +86,7 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
         Варианты
       </Typography>
       <div className="space-y-2">
+        {actions}
         {fields.map((field, index) => {
           const variant = field as unknown as ProductVariantSchema & {
             key: string;

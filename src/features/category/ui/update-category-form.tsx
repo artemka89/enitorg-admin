@@ -22,6 +22,8 @@ import {
   SelectValue,
 } from '@/shared/ui/select';
 import { Spinner } from '@/shared/ui/spinner';
+import { Textarea } from '@/shared/ui/textarea';
+import { Typography } from '@/shared/ui/typography';
 
 import { AddCategorySchema } from '../model/categories-schemas';
 import { useGetCategories } from '../model/use-get-categories';
@@ -46,6 +48,9 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
     values: {
       name: currentCategory?.name || '',
       parentId: currentCategory?.parentId || 'none',
+      seoTitle: currentCategory?.seoTitle || '',
+      seoH1: currentCategory?.seoH1 || '',
+      seoDescription: currentCategory?.seoDescription || '',
     },
     resolver: zodResolver(AddCategorySchema),
   });
@@ -121,6 +126,54 @@ export const UpdateCategoryForm: FC<{ id: string }> = ({ id }) => {
                         ))}
                     </SelectContent>
                   </Select>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
+
+        <div className="flex flex-col gap-2">
+          <Typography size="2xl" weight="semibold">
+            СЕО
+          </Typography>
+
+          <FormField
+            control={form.control}
+            name="seoTitle"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Заголовок:</FormLabel>
+                <FormControl>
+                  <Textarea {...field} placeholder="Заголовок" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="seoH1"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>H1:</FormLabel>
+                <FormControl>
+                  <Textarea {...field} placeholder="H1" />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="seoDescription"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Описание:</FormLabel>
+                <FormControl>
+                  <Textarea {...field} placeholder="Описание" />
                 </FormControl>
                 <FormMessage />
               </FormItem>

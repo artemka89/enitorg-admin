@@ -39,6 +39,9 @@ export const AddCategoryForm: FC = () => {
     defaultValues: {
       name: '',
       parentId: 'none',
+      seoTitle: '',
+      seoH1: '',
+      seoDescription: '',
     },
     resolver: zodResolver(AddCategorySchema),
   });
