@@ -92,7 +92,12 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
 
     const price = variant.price ? formatPrice(variant.price) : '';
     const code = variant.code || '';
-    const params: string[] = [attributeNames, price, code].filter(Boolean);
+    const params: string[] = [
+      `Вариант ${index + 1}`,
+      attributeNames,
+      price,
+      code,
+    ].filter(Boolean);
 
     return params.filter(Boolean).join(' - ');
   };
@@ -104,6 +109,7 @@ export function ProductVariantFields<TFieldValues extends FieldValues>({
       id: '',
       code: lastVariant?.code ? String(Number(lastVariant.code) + 1) : '',
       price: 0,
+      order: lastVariant.order + 1,
       imageUrls: [],
       status: lastVariant?.status || 'IN_SALE',
       minSaleQuantity: lastVariant?.minSaleQuantity || 1,

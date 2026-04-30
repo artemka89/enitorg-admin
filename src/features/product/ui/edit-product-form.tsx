@@ -58,9 +58,16 @@ export const EditProductForm: FC<EditProductFormProps> = ({
 
   const onSubmit = async (data: ProductFormSchema) => {
     if (!product || !product?.id) return;
+    const payload = {
+      ...data,
+      variants: data.variants.map((variant, index) => ({
+        ...variant,
+        order: index + 1,
+      })),
+    };
 
     update(
-      { id: product.id, ...data },
+      { id: product.id, ...payload },
       {
         onSuccess: () => {
           form.reset();
