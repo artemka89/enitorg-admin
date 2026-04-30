@@ -61,7 +61,15 @@ export const AddProductsForm: FC<AddProductsFormProps> = () => {
   });
 
   const handleOnSubmit = async (data: AddProductsSchema) => {
-    mutate(data.items, {
+    const payload = data.items.map((product) => ({
+      ...product,
+      variants: product.variants.map((variant, index) => ({
+        ...variant,
+        order: index + 1,
+      })),
+    }));
+
+    mutate(payload, {
       onSuccess: () => {
         canSaveToLocalStorage.current = false;
         localStorage.removeItem(LOCAL_STORAGE_KEY);
