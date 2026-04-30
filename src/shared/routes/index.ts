@@ -14,6 +14,7 @@ export const API_ROUTES = {
     generateCode: '/admin/products/generate-code',
     delete: (id: string) => `/admin/products/${id}`,
     moveVariant: '/admin/products/move-variant',
+    updatePrice: (id: string) => `/admin/products/${id}/update-price`,
   },
   categories: {
     base: '/categories',

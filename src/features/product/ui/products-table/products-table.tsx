@@ -44,6 +44,7 @@ import {
 
 import type { ProductStatus } from '../../model/types';
 import { useGetProducts } from '../../model/use-get-products';
+import { useUpdateProductPrice } from '../../model/use-update-product-price';
 
 import { columns } from './columns';
 
@@ -78,6 +79,8 @@ export const ProductsTable = () => {
     categorySlug: currentCategory === 'all' ? undefined : currentCategory,
   });
 
+  const { mutateAsync: updatePrice } = useUpdateProductPrice();
+
   const products = useMemo(
     () => data?.pages.flatMap((page) => page.items) || [],
     [data?.pages],
@@ -92,6 +95,11 @@ export const ProductsTable = () => {
     manualPagination: true,
     state: {
       columnVisibility,
+    },
+    meta: {
+      updateData: async (id: string, price: number) => {
+        await updatePrice({ id, price });
+      },
     },
   });
 

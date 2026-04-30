@@ -4,8 +4,6 @@ export interface Product {
   code: string;
   status: ProductStatus;
   price: number;
-  weight: number;
-  packageQuantity: number;
   description: string;
   specifications: ProductSpecification[];
   imageUrls: string[];
@@ -75,6 +73,7 @@ export interface UpdateProductVariant {
   id?: string;
   status: ProductStatus;
   price: number;
+  order: number;
   imageUrls: string[];
   specifications: ProductSpecification[];
   minSaleQuantity: number;
