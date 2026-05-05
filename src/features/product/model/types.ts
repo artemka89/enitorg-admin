@@ -4,10 +4,18 @@ export interface Product {
   code: string;
   status: ProductStatus;
   price: number;
-  description: string;
-  specifications: ProductSpecification[];
-  imageUrls: string[];
+  imageUrl: string;
   categories: ProductCategory[];
+  updatedAt: string;
+}
+
+export interface ProductDetails {
+  id: string;
+  status: ProductStatus;
+  name: string;
+  description: string;
+  categories: ProductCategory[];
+  specifications: ProductSpecification[];
   variants: ProductVariant[];
 }
 

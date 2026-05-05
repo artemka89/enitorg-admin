@@ -8,9 +8,11 @@ import { apiClient } from '@/shared/api/api-client';
 import { type PaginatedResponse } from '@/shared/api/types';
 import { API_ROUTES } from '@/shared/routes';
 
+import { productKeys } from './query-keys';
 import {
   type AddProduct,
   type Product,
+  type ProductDetails,
   type ProductsParams,
   type UpdateProduct,
 } from './types';
@@ -18,7 +20,7 @@ import {
 export const productApi = {
   getAll: (params?: ProductsParams) => {
     return infiniteQueryOptions({
-      queryKey: ['products', params],
+      queryKey: productKeys.list(params),
       queryFn: ({ pageParam, signal }) =>
         apiClient<PaginatedResponse<Product>>({
           url: API_ROUTES.products.base,
@@ -36,9 +38,12 @@ export const productApi = {
   },
   getById: (id?: string) => {
     return queryOptions({
-      queryKey: ['products', id],
+      queryKey: productKeys.byId(id || ''),
       queryFn: ({ signal }) =>
-        apiClient<Product>({ url: API_ROUTES.products.byId(id), signal }),
+        apiClient<ProductDetails>({
+          url: API_ROUTES.products.byId(id),
+          signal,
+        }),
       enabled: !!id,
     });
   },
@@ -57,7 +62,7 @@ export const productApi = {
     });
   },
   updatePrice: (data: { id: string; price: number }) =>
-    apiClient({
+    apiClient<{ id: string; newPrice: number }>({
       url: API_ROUTES.products.updatePrice(data.id),
       method: 'PUT',
       body: {
