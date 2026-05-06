@@ -69,6 +69,12 @@ export const productApi = {
         price: data.price,
       },
     }),
+  updatePrices: (data: { code: string; price: number }[]) =>
+    apiClient<{ id: string; newPrice: number }>({
+      url: API_ROUTES.products.updatePrices,
+      method: 'PUT',
+      body: data,
+    }),
   uploadImage: (image: File) => {
     const formData = new FormData();
     formData.append('image', image);

@@ -1,5 +1,6 @@
 import { createBrowserRouter } from 'react-router';
 
+import { UpdateProductPricesFromExcel } from '@/features/product';
 import { AddCategoryPage } from '@/pages/add-category-page';
 import { AddProductPage } from '@/pages/add-product-page';
 import { CategoriesPage } from '@/pages/categories-page';
@@ -28,6 +29,10 @@ export const router = createBrowserRouter([
         element: <ProductPage />,
       },
       { path: ROUTES.products.add, element: <AddProductPage /> },
+      {
+        path: ROUTES.products.updatePrices,
+        element: <UpdateProductPricesFromExcel />,
+      },
       { path: ROUTES.categories.base, element: <CategoriesPage /> },
       {
         path: ROUTES.categories.byId,

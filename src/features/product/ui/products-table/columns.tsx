@@ -114,7 +114,7 @@ export const columns: ColumnDef<Product>[] = [
       return (
         <div className="relative size-16 overflow-hidden rounded-xl">
           <img
-            src={row.original.imageUrls[0]}
+            src={row.original.imageUrl}
             alt={row.original.name}
             loading="lazy"
             className="h-full w-full object-contain"

@@ -15,6 +15,7 @@ export const API_ROUTES = {
     delete: (id: string) => `/admin/products/${id}`,
     moveVariant: '/admin/products/move-variant',
     updatePrice: (id: string) => `/admin/products/${id}/update-price`,
+    updatePrices: '/admin/products/update-prices',
     export: '/exports/products.xlsx',
   },
   categories: {
@@ -46,6 +47,7 @@ export const ROUTES = {
     base: '/products',
     byId: '/products/:id',
     add: '/products/add',
+    updatePrices: '/products/update-prices',
   },
   categories: {
     base: '/categories',
