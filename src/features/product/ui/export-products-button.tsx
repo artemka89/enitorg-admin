@@ -11,16 +11,12 @@ export function ExportButton() {
   const handleDownload = async () => {
     setIsLoading(true);
     try {
+      const cacheBuster = `?t=${new Date().getTime()}`;
       const response = await fetch(
-        `${privateConfig.VITE_STORAGE_API_URL}${API_ROUTES.products.export}`,
+        `${privateConfig.VITE_STORAGE_API_URL}${API_ROUTES.products.export}${cacheBuster}`,
         {
           cache: 'no-store',
           method: 'GET',
-          mode: 'cors',
-          headers: {
-            Pragma: 'no-cache',
-            'Cache-Control': 'no-cache',
-          },
         },
       );
 
