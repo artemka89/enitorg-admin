@@ -15,6 +15,8 @@ export function ExportButton() {
         `${privateConfig.VITE_STORAGE_API_URL}${API_ROUTES.products.export}`,
         {
           cache: 'no-store',
+          method: 'GET',
+          mode: 'cors',
           headers: {
             Pragma: 'no-cache',
             'Cache-Control': 'no-cache',
