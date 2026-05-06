@@ -17,6 +17,8 @@ export const API_ROUTES = {
     updatePrice: (id: string) => `/admin/products/${id}/update-price`,
     updatePrices: '/admin/products/update-prices',
     export: '/exports/products.xlsx',
+    updateExcel: '/admin/products/export',
+    updateYmlFeed: '/admin/products/yml-feed',
   },
   categories: {
     base: '/categories',
@@ -57,6 +59,9 @@ export const ROUTES = {
   orders: {
     base: '/orders',
     byId: '/orders/:id',
+  },
+  settings: {
+    base: '/settings',
   },
 } as const;
 

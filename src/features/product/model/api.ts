@@ -75,6 +75,17 @@ export const productApi = {
       method: 'PUT',
       body: data,
     }),
+  updateExports: async () => {
+    const excel = await apiClient({
+      url: API_ROUTES.products.updateExcel,
+      method: 'POST',
+    });
+    const ymlFeed = await apiClient({
+      url: API_ROUTES.products.updateYmlFeed,
+      method: 'POST',
+    });
+    await Promise.all([excel, ymlFeed]);
+  },
   uploadImage: (image: File) => {
     const formData = new FormData();
     formData.append('image', image);

@@ -9,6 +9,7 @@ import { LoginPage } from '@/pages/login-page';
 import { OrderPage } from '@/pages/order-page';
 import { OrdersPage } from '@/pages/orders-page';
 import { ProductPage } from '@/pages/product-page';
+import { SettingsPage } from '@/pages/settings-page';
 import { ROUTES } from '@/shared/routes';
 
 import { HomePage } from '../../pages/home-page';
@@ -50,7 +51,11 @@ export const router = createBrowserRouter([
         path: ROUTES.orders.byId,
         element: <OrderPage />,
       },
-      { path: '*', element: <div>Страница не найдена</div> },
+      {
+        path: ROUTES.settings.base,
+        element: <SettingsPage />,
+      },
+      { path: '*', element: <div>Страница не найдена</div> },
     ],
   },
   { path: ROUTES.login.base, element: <LoginPage /> },
